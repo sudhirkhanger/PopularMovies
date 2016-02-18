@@ -22,11 +22,27 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <fragment
-        android:id="@+id/titles_fragment"
-        android:name="com.sudhirkhanger.app.popularmoviesstageone.TitlesFragment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        android:orientation="horizontal">
+
+        <fragment
+            android:id="@+id/titles_fragment"
+            android:name="com.sudhirkhanger.app.popularmoviesstageone.TitlesFragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+        <fragment
+            android:id="@+id/details_fragment"
+            android:name="com.sudhirkhanger.app.popularmoviesstageone.DetailsFragment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
