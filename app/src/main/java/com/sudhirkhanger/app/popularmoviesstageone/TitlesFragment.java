@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sudhirkhanger.app.popularmoviesstageone.Model.MovieModel;
+
 import java.util.ArrayList;
 
 public class TitlesFragment extends Fragment {
@@ -36,7 +38,7 @@ public class TitlesFragment extends Fragment {
     private ArrayList<MovieModel> getDataSet(int i) {
         ArrayList arrayList = new ArrayList<MovieModel>();
         for (int index = 0; index < i; index++) {
-            MovieModel movieModel = new MovieModel(IMAGE_URL);
+            MovieModel movieModel = new MovieModel(IMAGE_URL, "Fragment " + index);
             arrayList.add(movieModel);
         }
         return arrayList;

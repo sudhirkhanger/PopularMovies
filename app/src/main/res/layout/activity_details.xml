@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".PopularMoviesActivity">
+    tools:context="com.sudhirkhanger.app.popularmoviesstageone.DetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,27 +22,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <fragment
-            android:id="@+id/titles_fragment"
-            android:name="com.sudhirkhanger.app.popularmoviesstageone.TitlesFragment"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-        <fragment
-            android:id="@+id/details_fragment"
-            android:name="com.sudhirkhanger.app.popularmoviesstageone.DetailsFragment"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-    </LinearLayout>
+    <include layout="@layout/content_details"/>
 
 </android.support.design.widget.CoordinatorLayout>
