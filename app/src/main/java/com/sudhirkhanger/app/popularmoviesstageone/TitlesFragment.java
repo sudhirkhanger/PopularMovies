@@ -8,13 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sudhirkhanger.app.popularmoviesstageone.Model.MovieModel;
-
-import java.util.ArrayList;
+import com.sudhirkhanger.app.popularmoviesstageone.Model.Constants;
 
 public class TitlesFragment extends Fragment {
 
-    private static final String IMAGE_URL = "http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg";
     private static final int COLUMN = 2;
     private static final int ITEM = 15;
 
@@ -32,15 +29,8 @@ public class TitlesFragment extends Fragment {
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN));
-        recyclerView.setAdapter(new MovieAdapter(getContext(), getDataSet(ITEM)));
-    }
-
-    private ArrayList<MovieModel> getDataSet(int i) {
-        ArrayList arrayList = new ArrayList<MovieModel>();
-        for (int index = 0; index < i; index++) {
-            MovieModel movieModel = new MovieModel(IMAGE_URL, "Fragment " + index);
-            arrayList.add(movieModel);
-        }
-        return arrayList;
+        recyclerView.setAdapter(new MovieAdapter(getContext(),
+                (new JsonUtil().JsonToArrayList(Constants.MOVIE_JSON,
+                        ITEM))));
     }
 }

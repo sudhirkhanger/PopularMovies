@@ -4,9 +4,8 @@ public class MovieModel {
     private String mposterUrl;
     private String mTitle;
 
-    public MovieModel(String posterUrl, String title) {
+    public MovieModel(String posterUrl) {
         mposterUrl = posterUrl;
-        mTitle = title;
     }
 
     public String getMposterUrl() {
