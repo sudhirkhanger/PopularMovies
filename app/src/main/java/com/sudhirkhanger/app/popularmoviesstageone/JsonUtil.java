@@ -18,7 +18,7 @@ public class JsonUtil {
     private static final String TAG_OVERVIEW = "overview";
     private static final String IMAGE_URL = "https://image.tmdb.org/t/p/w185/";
 
-    public ArrayList<Movie> JsonToArrayList(String jsonStr, int index) {
+    protected ArrayList<Movie> JsonToArrayList(String jsonStr, int index) {
 
         ArrayList<Movie> movieArr = new ArrayList<>();
 
