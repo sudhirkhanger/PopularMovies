@@ -9,17 +9,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-import com.sudhirkhanger.app.popularmoviesstageone.Model.MovieModel;
+import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
 
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    private List<MovieModel> mMovieModelList;
+    private List<Movie> mMovieList;
     private Context mContext;
 
-    public MovieAdapter(Context context, List<MovieModel> movieModelList) {
-        mMovieModelList = movieModelList;
+    public MovieAdapter(Context context, List<Movie> movieList) {
+        mMovieList = movieList;
         mContext = context;
     }
 
@@ -57,12 +57,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             }
         });
 
-        Picasso.with(mContext).
-                load(mMovieModelList.get(pos).getMposterUrl()).
-                into(movieViewHolder.mImageView);
+        Picasso.with(mContext)
+                .load(mMovieList.get(pos).getPosterPath())
+                .into(movieViewHolder.mImageView);
     }
 
     public int getItemCount() {
-        return mMovieModelList.size();
+        return mMovieList.size();
     }
 }

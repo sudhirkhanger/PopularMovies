@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sudhirkhanger.app.popularmoviesstageone.Model.Constants;
+import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
+
+import java.util.ArrayList;
 
 public class TitlesFragment extends Fragment {
 
@@ -29,8 +32,19 @@ public class TitlesFragment extends Fragment {
     private void setupRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN));
-        recyclerView.setAdapter(new MovieAdapter(getContext(),
-                (new JsonUtil().JsonToArrayList(Constants.MOVIE_JSON,
-                        ITEM))));
+
+        ArrayList<Movie> movieArrayList = new JsonUtil().JsonToArrayList(
+                Constants.MOVIE_JSON,
+                ITEM);
+
+        MovieAdapter movieAdapter = new MovieAdapter(getContext(),
+                movieArrayList);
+
+        recyclerView.setAdapter(
+                new MovieAdapter(
+                        getContext(),
+                        new JsonUtil().JsonToArrayList(
+                                Constants.MOVIE_JSON,
+                                ITEM)));
     }
 }

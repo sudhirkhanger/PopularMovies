@@ -1,6 +1,6 @@
 package com.sudhirkhanger.app.popularmoviesstageone;
 
-import com.sudhirkhanger.app.popularmoviesstageone.Model.MovieModel;
+import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,36 +16,36 @@ public class JsonUtil {
     private static final String TAG_POSTER_PATH = "poster_path";
     private static final String TAG_VOTE_AVERAGE = "vote_average";
     private static final String TAG_OVERVIEW = "overview";
-    private static final String posterURL = "https://image.tmdb.org/t/p/w185/";
+    private static final String IMAGE_URL = "https://image.tmdb.org/t/p/w185/";
 
-    public ArrayList<MovieModel> JsonToArrayList(String jsonStr, int index) {
-        String title;
-        String release_date;
-        String poster_path;
-        String vote_average;
-        String overview;
-        ArrayList<MovieModel> arrayList = new ArrayList<MovieModel>();
+    public ArrayList<Movie> JsonToArrayList(String jsonStr, int index) {
+
+        ArrayList<Movie> movieArr = new ArrayList<>();
 
         try {
-            JSONObject movieObj = new JSONObject(jsonStr);
-            JSONArray movieArr = movieObj.getJSONArray(TAG_RESULT);
+            JSONObject movieJsonObj = new JSONObject(jsonStr);
+            JSONArray movieJsonArr = movieJsonObj.getJSONArray(TAG_RESULT);
 
             for (int i = 0; i < index; i++) {
-                JSONObject titleObj = movieArr.getJSONObject(i);
+                JSONObject titleObj = movieJsonArr.getJSONObject(i);
 
-                title = titleObj.getString(TAG_TITLE);
-                release_date = titleObj.getString(TAG_RELEASE_DATE);
-                poster_path = titleObj.getString(TAG_POSTER_PATH);
-                vote_average = titleObj.getString(TAG_VOTE_AVERAGE);
-                overview = titleObj.getString(TAG_OVERVIEW);
+                String title = titleObj.getString(TAG_TITLE);
+                String release_date = titleObj.getString(TAG_RELEASE_DATE);
+                String poster_path = titleObj.getString(TAG_POSTER_PATH);
+                String vote_average = titleObj.getString(TAG_VOTE_AVERAGE);
+                String overview = titleObj.getString(TAG_OVERVIEW);
 
-                MovieModel movieModel = new MovieModel(posterURL + poster_path);
-                arrayList.add(movieModel);
+                Movie movie = new Movie(title,
+                        release_date,
+                        IMAGE_URL + poster_path,
+                        vote_average,
+                        overview);
+
+                movieArr.add(movie);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        return arrayList;
+        return movieArr;
     }
 }
