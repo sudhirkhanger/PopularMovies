@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
@@ -18,7 +19,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     private List<Movie> mMovieList;
     private Context mContext;
 
-    public MovieAdapter(Context context, List<Movie> movieList) {
+    public MovieAdapter(Context context, ArrayList<Movie> movieList) {
         mMovieList = movieList;
         mContext = context;
     }
