@@ -32,6 +32,7 @@ public class TitlesFragment extends Fragment {
 
     private static final int COLUMN = 3;
     private RecyclerView mRecyclerView = null;
+    private MovieAdapter mMovieAdapter = null;
     //private static final String SORT = "vote_average.desc";
     private static final String SORT = "popularity.desc";
     //private static final String SORT = "vote_count.desc";
@@ -48,8 +49,9 @@ public class TitlesFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN));
+        mRecyclerView.setAdapter(mMovieAdapter);
 
-        FetchMovieInfoTask weatherTask = new FetchMovieInfoTask();
+        FetchMoviesTask weatherTask = new FetchMoviesTask();
         weatherTask.execute(SORT);
 
         return rootView;
@@ -73,16 +75,16 @@ public class TitlesFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 //        if (id == R.id.action_refresh) {
-//            FetchMovieInfoTask weatherTask = new FetchMovieInfoTask();
+//            FetchMoviesTask weatherTask = new FetchMoviesTask();
 //            weatherTask.execute("popularity.desc");
 //            return true;
 //        }
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchMovieInfoTask extends AsyncTask<String, Void, ArrayList<Movie>> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
 
-        private final String LOG_TAG = FetchMovieInfoTask.class.getSimpleName();
+        private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
         private ArrayList<Movie> getMovieDataFromJson(String movieJsonStr)
                 throws JSONException {
@@ -93,7 +95,7 @@ public class TitlesFragment extends Fragment {
             final String MDB_POSTER_PATH = "poster_path";
             final String MDB_VOTE_AVERAGE = "vote_average";
             final String MDB_OVERVIEW = "overview";
-            final String IMAGE_URL = "https://image.tmdb.org/t/p/w185/";
+            final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w185/";
 
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(MDB_RESULT);
@@ -112,16 +114,16 @@ public class TitlesFragment extends Fragment {
 
                 Movie movie = new Movie(title,
                         release_date,
-                        IMAGE_URL + poster_path,
+                        IMAGE_BASE_URL + poster_path,
                         vote_average,
                         overview);
 
                 movieArrayList.add(movie);
             }
 
-            for (Movie movie : movieArrayList) {
-                Log.v(LOG_TAG, "Movie Details: " + movie.toString());
-            }
+//            for (Movie movie : movieArrayList) {
+//                Log.v(LOG_TAG, "Movie Details: " + movie.toString());
+//            }
 
             return movieArrayList;
         }
@@ -218,7 +220,8 @@ public class TitlesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<Movie> result) {
-            mRecyclerView.setAdapter(new MovieAdapter(getContext(), result));
+            mMovieAdapter = new MovieAdapter(getContext(), result);
+            mRecyclerView.setAdapter(mMovieAdapter);
         }
     }
 }
