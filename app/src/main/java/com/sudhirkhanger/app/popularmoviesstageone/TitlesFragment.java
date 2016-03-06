@@ -30,12 +30,9 @@ import java.util.ArrayList;
 
 public class TitlesFragment extends Fragment {
 
-    private static final int COLUMN = 3;
+    private static final int COLUMN = 2;
     private RecyclerView mRecyclerView = null;
-    private MovieAdapter mMovieAdapter = null;
-    //private static final String SORT = "vote_average.desc";
-    private static final String SORT = "popularity.desc";
-    //private static final String SORT = "vote_count.desc";
+    private static String SORT = "popularity.desc";
 
     public TitlesFragment() {
     }
@@ -49,12 +46,15 @@ public class TitlesFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN));
-        mRecyclerView.setAdapter(mMovieAdapter);
-
-        FetchMoviesTask weatherTask = new FetchMoviesTask();
-        weatherTask.execute(SORT);
+        updateScreen();
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateScreen();
     }
 
     @Override
@@ -65,20 +65,21 @@ public class TitlesFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.titlesfragment, menu);
+        inflater.inflate(R.menu.menu_titles_fragment, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-//        if (id == R.id.action_refresh) {
-//            FetchMoviesTask weatherTask = new FetchMoviesTask();
-//            weatherTask.execute("popularity.desc");
-//            return true;
-//        }
+        switch (item.getItemId()) {
+            case R.id.popularity:
+                SORT = "popularity.desc";
+                updateScreen();
+                return true;
+            case R.id.rating:
+                SORT = "vote_average.desc";
+                updateScreen();
+                return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -95,7 +96,9 @@ public class TitlesFragment extends Fragment {
             final String MDB_POSTER_PATH = "poster_path";
             final String MDB_VOTE_AVERAGE = "vote_average";
             final String MDB_OVERVIEW = "overview";
+            final String MDB_BACKDROPS = "backdrop_path";
             final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w185/";
+            final String IMAGE_BACKDROPS_URL = "https://image.tmdb.org/t/p/w300/";
 
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(MDB_RESULT);
@@ -111,19 +114,17 @@ public class TitlesFragment extends Fragment {
                 String poster_path = movieObject.getString(MDB_POSTER_PATH);
                 String vote_average = movieObject.getString(MDB_VOTE_AVERAGE);
                 String overview = movieObject.getString(MDB_OVERVIEW);
+                String backdrops = movieObject.getString(MDB_BACKDROPS);
 
                 Movie movie = new Movie(title,
                         release_date,
                         IMAGE_BASE_URL + poster_path,
                         vote_average,
-                        overview);
+                        overview,
+                        IMAGE_BACKDROPS_URL + backdrops);
 
                 movieArrayList.add(movie);
             }
-
-//            for (Movie movie : movieArrayList) {
-//                Log.v(LOG_TAG, "Movie Details: " + movie.toString());
-//            }
 
             return movieArrayList;
         }
@@ -148,17 +149,21 @@ public class TitlesFragment extends Fragment {
 
                 final String MOVIEDB_BASE_URL =
                         "http://api.themoviedb.org/3/discover/movie?";
-                final String QUERY_PARAM = "sort_by";
-                final String APPKEY_PARAM = "api_key";
+                final String QUERY_SORT_BY = "sort_by";
+                final String QUERY_APPKEY = "api_key";
+                final String QUERY_VOTE_COUNT = "vote_count.gte";
+                final String PARAM_MIN_VOTES = "50";
 
                 Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
-                        .appendQueryParameter(QUERY_PARAM, params[0])
-                        .appendQueryParameter(APPKEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                        .appendQueryParameter(QUERY_SORT_BY, params[0])
+                        .appendQueryParameter(QUERY_VOTE_COUNT, PARAM_MIN_VOTES)
+                        .appendQueryParameter(QUERY_APPKEY, BuildConfig.THE_MOVIE_DB_API_KEY)
                         .build();
+
 
                 URL url = new URL(builtUri.toString());
 
-//                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
+                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -220,8 +225,12 @@ public class TitlesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<Movie> result) {
-            mMovieAdapter = new MovieAdapter(getContext(), result);
-            mRecyclerView.setAdapter(mMovieAdapter);
+            mRecyclerView.setAdapter(new MovieAdapter(getContext(), result));
         }
+    }
+
+    private void updateScreen() {
+        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
+        fetchMoviesTask.execute(SORT);
     }
 }

@@ -18,6 +18,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private List<Movie> mMovieList;
     private Context mContext;
+    private static final String PARCEL_KEY = "movie_parcel";
 
     public MovieAdapter(Context context, ArrayList<Movie> movieList) {
         mMovieList = movieList;
@@ -51,8 +52,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             public void onClick(View v) {
                 Context context = v.getContext();
 
+                Movie movieParcel = mMovieList.get(pos);
                 Intent intent = new Intent(context, DetailsActivity.class);
-                intent.putExtra("index", pos);
+                intent.putExtra(PARCEL_KEY, movieParcel);
 
                 context.startActivity(intent);
             }
