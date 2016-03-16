@@ -52,6 +52,9 @@ public class TitlesFragment extends Fragment {
     private RecyclerView mRecyclerView = null;
     SharedPreferences mSettings;
     private SharedPreferences.Editor mEditor;
+    private static final String SHARED_KEY_SORT = "sort";
+    private static final String POPULARITY = "popularity.desc";
+    private static final String RATING = "vote_average.desc";
 
     public TitlesFragment() {
     }
@@ -76,11 +79,6 @@ public class TitlesFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
@@ -95,13 +93,13 @@ public class TitlesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.popularity:
-                mEditor.putString("sort", "popularity.desc");
+                mEditor.putString(SHARED_KEY_SORT, POPULARITY);
                 mEditor.apply();
                 updateScreen();
                 item.setChecked(true);
                 return true;
             case R.id.rating:
-                mEditor.putString("sort", "vote_average.desc");
+                mEditor.putString(SHARED_KEY_SORT, RATING);
                 mEditor.apply();
                 updateScreen();
                 item.setChecked(true);
@@ -257,17 +255,18 @@ public class TitlesFragment extends Fragment {
 
     private void updateScreen() {
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-        String sortBy = mSettings.getString("sort", "popularity.desc");
+        String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
         fetchMoviesTask.execute(sortBy);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        if (mSettings.getString("sort", "popularity.desc") == "popularity.desc") {
-            menu.findItem(R.id.popularity).setChecked(true);
-        } else {
-            menu.findItem(R.id.rating).setChecked(true);
+        String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
+            if (sortBy.equals(POPULARITY)) {
+                menu.findItem(R.id.popularity).setChecked(true);
+            } else {
+                menu.findItem(R.id.rating).setChecked(true);
         }
     }
 }
