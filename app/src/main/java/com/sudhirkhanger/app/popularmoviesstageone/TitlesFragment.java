@@ -16,9 +16,11 @@
 
 package com.sudhirkhanger.app.popularmoviesstageone;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,7 +50,9 @@ public class TitlesFragment extends Fragment {
 
     private static final int COLUMN = 2;
     private RecyclerView mRecyclerView = null;
-    private static String SORT = "popularity.desc";
+    //    private static String SORT;
+    SharedPreferences mSettings;
+    private SharedPreferences.Editor mEditor;
 
     public TitlesFragment() {
     }
@@ -62,6 +66,12 @@ public class TitlesFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN));
+
+        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mEditor = mSettings.edit();
+//        mEditor.putString("sort", "popularity.desc");
+        mEditor.apply();
+
         updateScreen();
 
         return rootView;
@@ -70,7 +80,7 @@ public class TitlesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        updateScreen();
+//        updateScreen();
     }
 
     @Override
@@ -88,11 +98,13 @@ public class TitlesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.popularity:
-                SORT = "popularity.desc";
+                mEditor.putString("sort", "popularity.desc");
+                mEditor.apply();
                 updateScreen();
                 return true;
             case R.id.rating:
-                SORT = "vote_average.desc";
+                mEditor.putString("sort", "vote_average.desc");
+                mEditor.apply();
                 updateScreen();
                 return true;
         }
@@ -209,7 +221,6 @@ public class TitlesFragment extends Fragment {
                 }
                 movieJsonStr = buffer.toString();
 
-//                Log.v(LOG_TAG, "Movie string: " + movieJsonStr);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -247,6 +258,8 @@ public class TitlesFragment extends Fragment {
 
     private void updateScreen() {
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-        fetchMoviesTask.execute(SORT);
+        String sortBy = mSettings.getString("sort", "popularity.desc");
+        Log.d("updateScreen", sortBy);
+        fetchMoviesTask.execute(sortBy);
     }
 }
