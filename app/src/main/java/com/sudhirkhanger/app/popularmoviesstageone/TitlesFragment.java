@@ -50,7 +50,6 @@ public class TitlesFragment extends Fragment {
 
     private static final int COLUMN = 2;
     private RecyclerView mRecyclerView = null;
-    //    private static String SORT;
     SharedPreferences mSettings;
     private SharedPreferences.Editor mEditor;
 
@@ -69,7 +68,6 @@ public class TitlesFragment extends Fragment {
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mSettings.edit();
-//        mEditor.putString("sort", "popularity.desc");
         mEditor.apply();
 
         updateScreen();
@@ -80,7 +78,6 @@ public class TitlesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-//        updateScreen();
     }
 
     @Override
@@ -101,11 +98,13 @@ public class TitlesFragment extends Fragment {
                 mEditor.putString("sort", "popularity.desc");
                 mEditor.apply();
                 updateScreen();
+                item.setChecked(true);
                 return true;
             case R.id.rating:
                 mEditor.putString("sort", "vote_average.desc");
                 mEditor.apply();
                 updateScreen();
+                item.setChecked(true);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -259,7 +258,16 @@ public class TitlesFragment extends Fragment {
     private void updateScreen() {
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
         String sortBy = mSettings.getString("sort", "popularity.desc");
-        Log.d("updateScreen", sortBy);
         fetchMoviesTask.execute(sortBy);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (mSettings.getString("sort", "popularity.desc") == "popularity.desc") {
+            menu.findItem(R.id.popularity).setChecked(true);
+        } else {
+            menu.findItem(R.id.rating).setChecked(true);
+        }
     }
 }
