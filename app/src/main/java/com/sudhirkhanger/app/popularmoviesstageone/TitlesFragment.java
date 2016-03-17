@@ -45,6 +45,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class TitlesFragment extends Fragment {
 
@@ -80,8 +81,12 @@ public class TitlesFragment extends Fragment {
         mMovieArrayList = new ArrayList<>();
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
         String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
-        fetchMoviesTask.execute(sortBy);
-        Log.d("onCreateView", "ArrayList size: " + mMovieArrayList.size());
+
+        try {
+            mMovieArrayList = fetchMoviesTask.execute(sortBy).get();
+        } catch (ExecutionException | InterruptedException ei) {
+            ei.printStackTrace();
+        }
 
         MovieAdapter movieAdapter = new MovieAdapter(getActivity(), mMovieArrayList);
         mRecyclerView.setAdapter(movieAdapter);
@@ -261,8 +266,6 @@ public class TitlesFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Movie> result) {
             mMovieArrayList = result;
-            Log.d("onPostExecute", "ArrayList size: " + mMovieArrayList.size());
-            mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
         }
     }
 
