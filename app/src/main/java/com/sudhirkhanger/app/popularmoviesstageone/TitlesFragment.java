@@ -50,8 +50,12 @@ public class TitlesFragment extends Fragment {
 
     private static final int COLUMN = 2;
     private RecyclerView mRecyclerView = null;
+
+    private ArrayList<Movie> mMovieArrayList;
+
     SharedPreferences mSettings;
     private SharedPreferences.Editor mEditor;
+
     private static final String SHARED_KEY_SORT = "sort";
     private static final String POPULARITY = "popularity.desc";
     private static final String RATING = "vote_average.desc";
@@ -73,7 +77,14 @@ public class TitlesFragment extends Fragment {
         mEditor = mSettings.edit();
         mEditor.apply();
 
-        updateScreen();
+        mMovieArrayList = new ArrayList<>();
+        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
+        String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
+        fetchMoviesTask.execute(sortBy);
+        Log.d("onCreateView", "ArrayList size: " + mMovieArrayList.size());
+
+        MovieAdapter movieAdapter = new MovieAdapter(getActivity(), mMovieArrayList);
+        mRecyclerView.setAdapter(movieAdapter);
 
         return rootView;
     }
@@ -249,7 +260,9 @@ public class TitlesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<Movie> result) {
-            mRecyclerView.setAdapter(new MovieAdapter(getContext(), result));
+            mMovieArrayList = result;
+            Log.d("onPostExecute", "ArrayList size: " + mMovieArrayList.size());
+            mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
         }
     }
 
@@ -263,10 +276,10 @@ public class TitlesFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
-            if (sortBy.equals(POPULARITY)) {
-                menu.findItem(R.id.popularity).setChecked(true);
-            } else {
-                menu.findItem(R.id.rating).setChecked(true);
+        if (sortBy.equals(POPULARITY)) {
+            menu.findItem(R.id.popularity).setChecked(true);
+        } else {
+            menu.findItem(R.id.rating).setChecked(true);
         }
     }
 }
