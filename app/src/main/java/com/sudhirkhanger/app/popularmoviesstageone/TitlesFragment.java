@@ -50,8 +50,6 @@ import java.util.concurrent.ExecutionException;
 public class TitlesFragment extends Fragment {
 
     private static final int COLUMN = 2;
-    private RecyclerView mRecyclerView = null;
-
     private ArrayList<Movie> mMovieArrayList;
 
     SharedPreferences mSettings;
@@ -70,7 +68,7 @@ public class TitlesFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_titles, container, false);
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
+        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN));
 
@@ -203,8 +201,6 @@ public class TitlesFragment extends Fragment {
 
 
                 URL url = new URL(builtUri.toString());
-
-                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
