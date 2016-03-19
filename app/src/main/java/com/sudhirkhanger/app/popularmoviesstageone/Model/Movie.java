@@ -19,6 +19,11 @@ package com.sudhirkhanger.app.popularmoviesstageone.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * This class holds movie object which
+ * contains various info about a movie.
+ */
+
 public class Movie implements Parcelable {
     String mTitle;
     String mReleaseDate;
@@ -99,7 +104,6 @@ public class Movie implements Parcelable {
                 ", mOverView='" + mOverView + '\'' +
                 '}';
     }
-
 
     @Override
     public int describeContents() {

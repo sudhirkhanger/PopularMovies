@@ -20,6 +20,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+/**
+ * This activity hosts Details Fragment which
+ * shows detailed information about a movie.
+ */
+
 public class DetailsActivity extends AppCompatActivity {
 
     @Override

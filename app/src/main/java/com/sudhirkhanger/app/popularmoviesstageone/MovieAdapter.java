@@ -30,6 +30,10 @@ import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This adapter feeds the RecyclerView.
+ */
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private List<Movie> mMovieList;

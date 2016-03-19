@@ -3,4 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="image_height">200dp</dimen>
+    <dimen name="title_size">25sp</dimen>
+    <dimen name="thumbnail_size">150dp</dimen>
+    <dimen name="year_size">30sp</dimen>
+    <dimen name="info_secondary">15sp</dimen>
 </resources>

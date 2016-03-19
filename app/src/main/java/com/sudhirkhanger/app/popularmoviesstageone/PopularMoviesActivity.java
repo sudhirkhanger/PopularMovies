@@ -22,6 +22,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ *  This is the main activity which
+ *  hosts titles fragment and shows
+ *  list of movies.
+ */
+
 public class PopularMoviesActivity extends AppCompatActivity {
 
     @Override

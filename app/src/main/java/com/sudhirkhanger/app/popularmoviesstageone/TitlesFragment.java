@@ -47,6 +47,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * This is the primary fragment where
+ * json is download and processed in
+ * a background task
+ */
+
 public class TitlesFragment extends Fragment {
 
     private static final int COLUMN = 2;
@@ -62,6 +68,16 @@ public class TitlesFragment extends Fragment {
     public TitlesFragment() {
     }
 
+    /**
+     * This is the main class of the of the fragment
+     * we set RecyclerView here.
+     * Initialize settings to store URL for sorting.
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,6 +119,14 @@ public class TitlesFragment extends Fragment {
         inflater.inflate(R.menu.menu_titles_fragment, menu);
     }
 
+    /**
+     * User makes choice about sorting
+     * There are two possibilities
+     * First on basis of popularity
+     * Second on basis of average rating
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -122,10 +146,20 @@ public class TitlesFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Background task class where JSON is downloaded
+     * and returned as an arraylist of movie objects
+     */
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
+        /**
+         * JSON parsing class
+         * @param movieJsonStr Raw json data
+         * @return Arraylist of movie objects
+         * @throws JSONException
+         */
         private ArrayList<Movie> getMovieDataFromJson(String movieJsonStr)
                 throws JSONException {
 
@@ -265,12 +299,21 @@ public class TitlesFragment extends Fragment {
         }
     }
 
+    /**
+     * convenience class to update the data
+     */
     private void updateScreen() {
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
         String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
         fetchMoviesTask.execute(sortBy);
     }
 
+    /**
+     * When a user makes a choice between
+     * sorting choices we also want to update
+     * the selection in menu ui.
+     * @param menu
+     */
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
