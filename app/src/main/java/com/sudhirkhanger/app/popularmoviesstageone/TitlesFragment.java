@@ -65,6 +65,8 @@ public class TitlesFragment extends Fragment {
     private static final String POPULARITY = "popularity.desc";
     private static final String RATING = "vote_average.desc";
 
+    private RecyclerView mRecyclerView;
+
     public TitlesFragment() {
     }
 
@@ -84,28 +86,36 @@ public class TitlesFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_titles, container, false);
 
-        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
+//        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN));
+        mRecyclerView.setAdapter(new MovieAdapter(getActivity(), new ArrayList<Movie>()));
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mSettings.edit();
         mEditor.apply();
 
-        mMovieArrayList = new ArrayList<>();
-        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-        String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
-
-        try {
-            mMovieArrayList = fetchMoviesTask.execute(sortBy).get();
-        } catch (ExecutionException | InterruptedException ei) {
-            ei.printStackTrace();
-        }
-
-        MovieAdapter movieAdapter = new MovieAdapter(getActivity(), mMovieArrayList);
-        mRecyclerView.setAdapter(movieAdapter);
+//        mMovieArrayList = new ArrayList<>();
+//        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
+//        String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
+//
+//        try {
+//            mMovieArrayList = fetchMoviesTask.execute(sortBy).get();
+//        } catch (ExecutionException | InterruptedException ei) {
+//            ei.printStackTrace();
+//        }
+//
+//        MovieAdapter movieAdapter = new MovieAdapter(getActivity(), mMovieArrayList);
+//        mRecyclerView.setAdapter(movieAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateScreen();
     }
 
     @Override
@@ -124,6 +134,7 @@ public class TitlesFragment extends Fragment {
      * There are two possibilities
      * First on basis of popularity
      * Second on basis of average rating
+     *
      * @param item
      * @return
      */
@@ -156,6 +167,7 @@ public class TitlesFragment extends Fragment {
 
         /**
          * JSON parsing class
+         *
          * @param movieJsonStr Raw json data
          * @return Arraylist of movie objects
          * @throws JSONException
@@ -295,7 +307,7 @@ public class TitlesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<Movie> result) {
-            mMovieArrayList = result;
+//            mMovieArrayList = result;
         }
     }
 
@@ -305,13 +317,20 @@ public class TitlesFragment extends Fragment {
     private void updateScreen() {
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
         String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
-        fetchMoviesTask.execute(sortBy);
+//        fetchMoviesTask.execute(sortBy);
+        try {
+            mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
+                    fetchMoviesTask.execute(sortBy).get()));
+        } catch (ExecutionException | InterruptedException ei) {
+            ei.printStackTrace();
+        }
     }
 
     /**
      * When a user makes a choice between
      * sorting choices we also want to update
      * the selection in menu ui.
+     *
      * @param menu
      */
     @Override
