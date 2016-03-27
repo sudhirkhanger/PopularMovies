@@ -56,7 +56,8 @@ import java.util.concurrent.ExecutionException;
 public class TitlesFragment extends Fragment {
 
     private static final int COLUMN = 2;
-    private ArrayList<Movie> mMovieArrayList;
+
+    private RecyclerView mRecyclerView;
 
     SharedPreferences mSettings;
     private SharedPreferences.Editor mEditor;
@@ -64,8 +65,6 @@ public class TitlesFragment extends Fragment {
     private static final String SHARED_KEY_SORT = "sort";
     private static final String POPULARITY = "popularity.desc";
     private static final String RATING = "vote_average.desc";
-
-    private RecyclerView mRecyclerView;
 
     public TitlesFragment() {
     }
@@ -86,32 +85,22 @@ public class TitlesFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_titles, container, false);
 
-//        RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN));
-        mRecyclerView.setAdapter(new MovieAdapter(getActivity(), new ArrayList<Movie>()));
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mSettings.edit();
         mEditor.apply();
 
-//        mMovieArrayList = new ArrayList<>();
-//        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-//        String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
-//
-//        try {
-//            mMovieArrayList = fetchMoviesTask.execute(sortBy).get();
-//        } catch (ExecutionException | InterruptedException ei) {
-//            ei.printStackTrace();
-//        }
-//
-//        MovieAdapter movieAdapter = new MovieAdapter(getActivity(), mMovieArrayList);
-//        mRecyclerView.setAdapter(movieAdapter);
+        mRecyclerView.setAdapter(new MovieAdapter(getActivity(), new ArrayList<Movie>()));
 
         return rootView;
     }
 
+    /**
+     * Adapter will first populated here
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -307,7 +296,6 @@ public class TitlesFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList<Movie> result) {
-//            mMovieArrayList = result;
         }
     }
 
@@ -317,10 +305,10 @@ public class TitlesFragment extends Fragment {
     private void updateScreen() {
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
         String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
-//        fetchMoviesTask.execute(sortBy);
         try {
             mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
                     fetchMoviesTask.execute(sortBy).get()));
+            Log.d("updateScreen()", "fetchMovieTask performed");
         } catch (ExecutionException | InterruptedException ei) {
             ei.printStackTrace();
         }
