@@ -1,4 +1,4 @@
-# Udacity Android Nanodegree Project 1 Popular Movies Stage One
+# Udacity Android Nanodegree Project 2 Popular Movies
 
 ## Citations:-
 
@@ -27,4 +27,4 @@ http://stackoverflow.com/a/29166336/3034693
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
- 
+    
