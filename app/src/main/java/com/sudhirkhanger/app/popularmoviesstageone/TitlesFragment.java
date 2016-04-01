@@ -63,8 +63,8 @@ public class TitlesFragment extends Fragment {
     private SharedPreferences.Editor mEditor;
 
     private static final String SHARED_KEY_SORT = "sort";
-    private static final String POPULARITY = "popularity.desc";
-    private static final String RATING = "vote_average.desc";
+    private static final String PAGE = "1";
+
 
     public TitlesFragment() {
     }
@@ -131,13 +131,13 @@ public class TitlesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.popularity:
-                mEditor.putString(SHARED_KEY_SORT, POPULARITY);
+                mEditor.putString(SHARED_KEY_SORT, getString(R.string.url_popularity));
                 mEditor.apply();
                 updateScreen();
                 item.setChecked(true);
                 return true;
             case R.id.rating:
-                mEditor.putString(SHARED_KEY_SORT, RATING);
+                mEditor.putString(SHARED_KEY_SORT, getString(R.string.url_top_rated));
                 mEditor.apply();
                 updateScreen();
                 item.setChecked(true);
@@ -221,21 +221,23 @@ public class TitlesFragment extends Fragment {
 
             try {
 
+                // http://api.themoviedb.org/3/movie/popular?page=1&api_key={API Key}
+                // Build an URL like above
+
                 final String MOVIEDB_BASE_URL =
-                        "http://api.themoviedb.org/3/discover/movie?";
-                final String QUERY_SORT_BY = "sort_by";
-                final String QUERY_APPKEY = "api_key";
-                final String QUERY_VOTE_COUNT = "vote_count.gte";
-                final String PARAM_MIN_VOTES = "50";
+                        "http://api.themoviedb.org/3/movie";
+                final String QUERY_PAGE = "page";
+                final String QUERY_API_KEY = "api_key";
 
                 Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
-                        .appendQueryParameter(QUERY_SORT_BY, params[0])
-                        .appendQueryParameter(QUERY_VOTE_COUNT, PARAM_MIN_VOTES)
-                        .appendQueryParameter(QUERY_APPKEY, BuildConfig.THE_MOVIE_DB_API_KEY)
+                        .appendPath(params[0])
+                        .appendQueryParameter(QUERY_PAGE, params[1])
+                        .appendQueryParameter(QUERY_API_KEY, BuildConfig.THE_MOVIE_DB_API_KEY)
                         .build();
 
-
                 URL url = new URL(builtUri.toString());
+
+                Log.d(LOG_TAG, url.toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -304,10 +306,10 @@ public class TitlesFragment extends Fragment {
      */
     private void updateScreen() {
         FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-        String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
+        String sortBy = mSettings.getString(SHARED_KEY_SORT, getString(R.string.url_popularity));
         try {
             mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
-                    fetchMoviesTask.execute(sortBy).get()));
+                    fetchMoviesTask.execute(sortBy, PAGE).get()));
             Log.d("updateScreen()", "fetchMovieTask performed");
         } catch (ExecutionException | InterruptedException ei) {
             ei.printStackTrace();
@@ -324,8 +326,8 @@ public class TitlesFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        String sortBy = mSettings.getString(SHARED_KEY_SORT, POPULARITY);
-        if (sortBy.equals(POPULARITY)) {
+        String sortBy = mSettings.getString(SHARED_KEY_SORT, getString(R.string.url_popularity));
+        if (sortBy.equals(getString(R.string.url_popularity))) {
             menu.findItem(R.id.popularity).setChecked(true);
         } else {
             menu.findItem(R.id.rating).setChecked(true);
