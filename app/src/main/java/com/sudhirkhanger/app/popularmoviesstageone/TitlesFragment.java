@@ -55,8 +55,6 @@ import java.util.concurrent.ExecutionException;
 
 public class TitlesFragment extends Fragment {
 
-    private static final int COLUMN = 2;
-
     private RecyclerView mRecyclerView;
 
     SharedPreferences mSettings;
@@ -85,9 +83,18 @@ public class TitlesFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_titles, container, false);
 
+        // Set column size to 2 for default and portrait
+        // and 3 for landscape orientations
+        int column = Integer.parseInt(getString(R.string.grid_portrait));
+        if (getResources().getConfiguration().orientation == 1) {
+            column = Integer.parseInt(getString(R.string.grid_portrait));
+        } else if (getResources().getConfiguration().orientation == 2) {
+            column = Integer.parseInt(getString(R.string.grid_landscape));
+        }
+
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMN));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), column));
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mSettings.edit();
