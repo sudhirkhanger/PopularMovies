@@ -11,4 +11,7 @@
     <string name="url_popularity">popular</string>
     <string name="url_top_rated">top_rated</string>
 
+    <string name="grid_portrait">2</string>
+    <string name="grid_landscape">3</string>
+
 </resources>
