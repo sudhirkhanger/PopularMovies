@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
@@ -47,12 +48,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     public static class MovieViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
+        public TextView mTextView;
         public View mView;
 
         public MovieViewHolder(View view) {
             super(view);
             mView = view;
             mImageView = (ImageView) view.findViewById(R.id.imageview);
+            mTextView = (TextView) view.findViewById(R.id.list_title);
         }
     }
 
@@ -83,6 +86,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         Picasso.with(mContext)
                 .load(mMovieList.get(pos).getPosterPath())
                 .into(movieViewHolder.mImageView);
+        movieViewHolder.mTextView.setText(mMovieList.get(pos).getTitle());
     }
 
     public int getItemCount() {
