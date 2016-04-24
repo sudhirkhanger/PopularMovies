@@ -33,6 +33,16 @@
         <provider
             android:name=".Model.MovieProvider"
             android:authorities="com.sudhirkhanger.app.popularmoviesstageone"/>
+
+        <activity
+            android:name=".SpinnerActivity"
+            android:label="@string/title_activity_spinner"
+            android:parentActivityName=".PopularActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.sudhirkhanger.app.popularmoviesstageone.PopularActivity"/>
+        </activity>
     </application>
 
 </manifest>
