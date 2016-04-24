@@ -39,8 +39,6 @@ import java.util.ArrayList;
  */
 public class FavoriteFragment extends Fragment {
 
-    private static final String PAGE = "1";
-
     public FavoriteFragment() {
         // Required empty public constructor
     }
@@ -91,6 +89,9 @@ public class FavoriteFragment extends Fragment {
                 } while (cursor.moveToNext());
             }
         }
+
+        if (cursor != null)
+            cursor.close();
 
         for (Movie movie : mMovieArrayList) {
             Log.d("FavoriteFragment List", movie.toString());

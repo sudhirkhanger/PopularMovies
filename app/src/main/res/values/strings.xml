@@ -4,9 +4,9 @@
 
     <string name="title_activity_details">DetailsActivity</string>
 
-    <string name="sort_title">Sort By</string>
     <string name="popularity">Popularity</string>
     <string name="rating">Rating</string>
+    <string name="favorite">Favorite</string>
 
     <string name="url_popularity">popular</string>
     <string name="url_top_rated">top_rated</string>

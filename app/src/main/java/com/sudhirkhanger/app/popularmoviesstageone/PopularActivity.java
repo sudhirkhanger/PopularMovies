@@ -54,9 +54,9 @@ public class PopularActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new PopularFragment(), "Popular");
-        adapter.addFragment(new RatingFragment(), "Rating");
-        adapter.addFragment(new FavoriteFragment(), "Favorite");
+        adapter.addFragment(new PopularFragment(), getResources().getString(R.string.popularity));
+        adapter.addFragment(new RatingFragment(), getResources().getString(R.string.rating));
+        adapter.addFragment(new FavoriteFragment(), getResources().getString(R.string.favorite));
         viewPager.setAdapter(adapter);
     }
 
