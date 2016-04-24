@@ -76,11 +76,6 @@ public class PopularFragment extends Fragment {
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), column));
-//        mRecyclerView.setAdapter(new MovieAdapter(getActivity(), new ArrayList<Movie>()));
-
-//        mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
-//        mEditor = mSettings.edit();
-//        mEditor.apply();
 
         ArrayList<Movie> mMovieArrayList = new ArrayList<Movie>();
         try {
@@ -92,86 +87,4 @@ public class PopularFragment extends Fragment {
         mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
         return rootView;
     }
-
-//    /**
-//     * Adapter will first populated here
-//     */
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        updateScreen();
-//    }
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-////        setHasOptionsMenu(true);
-//    }
-
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu_titles_fragment, menu);
-//    }
-
-//    /**
-//     * User makes choice about sorting
-//     * There are two possibilities
-//     * First on basis of popularity
-//     * Second on basis of average rating
-//     *
-//     * @param item
-//     * @return
-//     */
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.popularity:
-//                mEditor.putString(SHARED_KEY_SORT, getString(R.string.url_popularity));
-//                mEditor.apply();
-//                updateScreen();
-//                item.setChecked(true);
-//                return true;
-//            case R.id.rating:
-//                mEditor.putString(SHARED_KEY_SORT, getString(R.string.url_top_rated));
-//                mEditor.apply();
-//                updateScreen();
-//                item.setChecked(true);
-//                return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
-//    /**
-//     * convenience class to update the data
-//     */
-//    private void updateScreen() {
-//        FetchMoviesTask fetchMoviesTask = new FetchMoviesTask();
-////        String sortBy = mSettings.getString(SHARED_KEY_SORT, getString(R.string.url_popularity));
-//        try {
-//            mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
-////                    fetchMoviesTask.execute(sortBy, PAGE).get()));
-//                    fetchMoviesTask.execute(getString(R.string.url_popularity), PAGE).get()));
-//            Log.d("updateScreen()", "fetchMovieTask performed");
-//        } catch (ExecutionException | InterruptedException ei) {
-//            ei.printStackTrace();
-//        }
-//    }
-
-//    /**
-//     * When a user makes a choice between
-//     * sorting choices we also want to update
-//     * the selection in menu ui.
-//     *
-//     * @param menu
-//     */
-//    @Override
-//    public void onPrepareOptionsMenu(Menu menu) {
-//        super.onPrepareOptionsMenu(menu);
-//        String sortBy = mSettings.getString(SHARED_KEY_SORT, getString(R.string.url_popularity));
-//        if (sortBy.equals(getString(R.string.url_popularity))) {
-//            menu.findItem(R.id.popularity).setChecked(true);
-//        } else {
-//            menu.findItem(R.id.rating).setChecked(true);
-//        }
-//    }
 }

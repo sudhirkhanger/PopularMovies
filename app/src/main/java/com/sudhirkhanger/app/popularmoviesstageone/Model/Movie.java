@@ -31,19 +31,22 @@ public class Movie implements Parcelable {
     String mVoteAverage;
     String mOverView;
     String mBackdrops;
+    String mId;
 
     public Movie(String title,
                  String releaseDate,
                  String posterPath,
                  String voteAverage,
                  String overView,
-                 String backdrops) {
+                 String backdrops,
+                 String id) {
         mTitle = title;
         mReleaseDate = releaseDate;
         mPosterPath = posterPath;
         mVoteAverage = voteAverage;
         mOverView = overView;
         mBackdrops = backdrops;
+        mId = id;
     }
 
     public String getTitle() {
@@ -94,6 +97,14 @@ public class Movie implements Parcelable {
         mBackdrops = backdrops;
     }
 
+    public String getId() {
+        return mId;
+    }
+
+    public void setId(String id) {
+        mId = id;
+    }
+
     @Override
     public String toString() {
         return "Movie{" +
@@ -102,8 +113,10 @@ public class Movie implements Parcelable {
                 ", mPosterPath='" + mPosterPath + '\'' +
                 ", mVoteAverage='" + mVoteAverage + '\'' +
                 ", mOverView='" + mOverView + '\'' +
+                ", mId='" + mId + '\'' +
                 '}';
     }
+
 
     @Override
     public int describeContents() {
@@ -118,6 +131,7 @@ public class Movie implements Parcelable {
         dest.writeString(this.mVoteAverage);
         dest.writeString(this.mOverView);
         dest.writeString(this.mBackdrops);
+        dest.writeString(this.mId);
     }
 
     protected Movie(Parcel in) {
@@ -127,13 +141,16 @@ public class Movie implements Parcelable {
         this.mVoteAverage = in.readString();
         this.mOverView = in.readString();
         this.mBackdrops = in.readString();
+        this.mId = in.readString();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
         public Movie createFromParcel(Parcel source) {
             return new Movie(source);
         }
 
+        @Override
         public Movie[] newArray(int size) {
             return new Movie[size];
         }

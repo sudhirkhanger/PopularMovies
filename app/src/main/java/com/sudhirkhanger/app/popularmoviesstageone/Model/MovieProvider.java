@@ -17,6 +17,7 @@
 package com.sudhirkhanger.app.popularmoviesstageone.Model;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -83,7 +84,7 @@ public class MovieProvider extends ContentProvider {
                         MovieContract.MovieEntry.TABLE_NAME,
                         projection,
                         MovieContract.MovieEntry._ID + " = ? ",
-                        new String[]{uri.getLastPathSegment()},
+                        new String[]{String.valueOf(ContentUris.parseId(uri))},
                         null,
                         null,
                         sortOrder
@@ -126,6 +127,15 @@ public class MovieProvider extends ContentProvider {
             case MOVIE:
                 rowsDeleted = db.delete(
                         MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
+                db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
+                        MovieContract.MovieEntry.TABLE_NAME + "'");
+                break;
+            case MOVIE_TITLE:
+                rowsDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME,
+                        MovieContract.MovieEntry._ID + " = ?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))});
+                db.execSQL("DELETE FROM SQLITE_SEQUENCE WHERE NAME = '" +
+                        MovieContract.MovieEntry.TABLE_NAME + "'");
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -139,10 +149,19 @@ public class MovieProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         int rowsUpdated;
 
+        if (values == null) {
+            throw new IllegalArgumentException("Cannot have null content values");
+        }
+
         switch (match) {
             case MOVIE:
                 rowsUpdated = db.update(MovieContract.MovieEntry.TABLE_NAME, values, selection,
                         selectionArgs);
+                break;
+            case MOVIE_TITLE:
+                rowsUpdated = db.update(MovieContract.MovieEntry.TABLE_NAME, values,
+                        MovieContract.MovieEntry._ID + " = ?",
+                        new String[]{String.valueOf(ContentUris.parseId(uri))});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

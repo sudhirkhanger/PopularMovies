@@ -36,7 +36,7 @@ import java.util.List;
  * list of movies.
  */
 
-public class PopularMoviesActivity extends AppCompatActivity {
+public class PopularActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

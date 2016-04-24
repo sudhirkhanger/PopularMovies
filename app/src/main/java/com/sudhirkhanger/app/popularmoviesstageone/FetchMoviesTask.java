@@ -55,6 +55,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         final String MDB_VOTE_AVERAGE = "vote_average";
         final String MDB_OVERVIEW = "overview";
         final String MDB_BACKDROPS = "backdrop_path";
+        final String MDB_ID = "id";
         final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w185/";
         final String IMAGE_BACKDROPS_URL = "https://image.tmdb.org/t/p/w300/";
 
@@ -73,13 +74,15 @@ public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
             String vote_average = movieObject.getString(MDB_VOTE_AVERAGE);
             String overview = movieObject.getString(MDB_OVERVIEW);
             String backdrops = movieObject.getString(MDB_BACKDROPS);
+            String id = movieObject.getString(MDB_ID);
 
             Movie movie = new Movie(title,
                     release_date,
                     IMAGE_BASE_URL + poster_path,
                     vote_average,
                     overview,
-                    IMAGE_BACKDROPS_URL + backdrops);
+                    IMAGE_BACKDROPS_URL + backdrops,
+                    id);
 
             movieArrayList.add(movie);
         }

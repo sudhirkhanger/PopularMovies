@@ -16,16 +16,20 @@
 
 package com.sudhirkhanger.app.popularmoviesstageone;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
+import com.sudhirkhanger.app.popularmoviesstageone.Model.MovieContract;
 
 import java.text.DateFormatSymbols;
 
@@ -54,6 +58,7 @@ public class DetailsFragment extends Fragment {
         TextView detailOverview = (TextView) rootView.findViewById(R.id.details_overview);
         ImageView detailBackdrops = (ImageView) rootView.findViewById(R.id.details_backdrop);
         ImageView detailThumbnail = (ImageView) rootView.findViewById(R.id.details_thumbnail);
+        Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
 
         detailTitle.setText(parcelableExtra.getTitle());
         detailReleaseYear.setText(getYear((parcelableExtra.getReleaseDate())));
@@ -66,6 +71,30 @@ public class DetailsFragment extends Fragment {
         Picasso.with(rootView.getContext())
                 .load(parcelableExtra.getPosterPath())
                 .into(detailThumbnail);
+
+        final String title = parcelableExtra.getTitle();
+        final String movie_id = parcelableExtra.getId();
+        final String poster = parcelableExtra.getReleaseDate();
+        final String backdrop = parcelableExtra.getBackdrops();
+        final String overview = parcelableExtra.getOverView();
+        final String vote_average = parcelableExtra.getVoteAverage();
+        final String release_date = parcelableExtra.getReleaseDate();
+
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ContentResolver resolver = getActivity().getContentResolver();
+                ContentValues values = new ContentValues();
+                values.put(MovieContract.MovieEntry.TITLE, title);
+                values.put(MovieContract.MovieEntry.MOVIE_ID, movie_id);
+                values.put(MovieContract.MovieEntry.POSTER, poster);
+                values.put(MovieContract.MovieEntry.BACKDROP, backdrop);
+                values.put(MovieContract.MovieEntry.OVERVIEW, overview);
+                values.put(MovieContract.MovieEntry.VOTE_AVERAGE, vote_average);
+                values.put(MovieContract.MovieEntry.DATE, release_date);
+
+                resolver.insert(MovieContract.MovieEntry.CONTENT_URI, values);
+            }
+        });
 
         return rootView;
     }
