@@ -39,10 +39,6 @@ import java.util.ArrayList;
  */
 public class FavoriteFragment extends Fragment {
 
-//    public FavoriteFragment() {
-//        // Required empty public constructor
-//    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -98,7 +94,7 @@ public class FavoriteFragment extends Fragment {
         }
 
         mMovieAdapter = new MovieAdapter(getActivity(), mMovieArrayList);
-
+        mMovieAdapter.notifyDataSetChanged();
         mRecyclerView.setAdapter(mMovieAdapter);
         return rootView;
     }
