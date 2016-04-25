@@ -37,12 +37,6 @@ import java.util.concurrent.ExecutionException;
 
 public class PopularFragment extends Fragment {
 
-//    private RecyclerView mRecyclerView;
-
-//    SharedPreferences mSettings;
-//    private SharedPreferences.Editor mEditor;
-
-    //    private static final String SHARED_KEY_SORT = "sort";
     private static final String PAGE = "1";
 
     public PopularFragment() {

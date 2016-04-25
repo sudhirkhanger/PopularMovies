@@ -16,7 +16,6 @@
 
 package com.sudhirkhanger.app.popularmoviesstageone;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -57,7 +56,7 @@ public class PopularActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new PopularFragment(), getResources().getString(R.string.popularity));
         adapter.addFragment(new RatingFragment(), getResources().getString(R.string.rating));
-        adapter.addFragment(new FavoriteFragment(), getResources().getString(R.string.favorite));
+        adapter.addFragment(new FavoriteFragment().newInstance(), getResources().getString(R.string.favorite));
         viewPager.setAdapter(adapter);
     }
 
@@ -106,7 +105,6 @@ public class PopularActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SpinnerActivity.class));
             return true;
         }
 
