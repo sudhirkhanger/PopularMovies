@@ -23,7 +23,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,11 +38,99 @@ import java.util.ArrayList;
  */
 public class FavoriteFragment extends Fragment {
 
+    RecyclerView mRecyclerView;
+    MovieAdapter mMovieAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
+//        View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
+//
+//        // Set column size to 2 for default and portrait
+//        // and 3 for landscape orientations
+//        int column = Integer.parseInt(getString(R.string.grid_portrait));
+//        if (getResources().getConfiguration().orientation == 1) {
+//            column = Integer.parseInt(getString(R.string.grid_portrait));
+//        } else if (getResources().getConfiguration().orientation == 2) {
+//            column = Integer.parseInt(getString(R.string.grid_landscape));
+//        }
+//
+//        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
+//        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), column));
+//
+//        ArrayList<Movie> mMovieArrayList = new ArrayList<Movie>();
+//
+//        ContentResolver resolver = getActivity().getContentResolver();
+//
+//        Cursor cursor =
+//                resolver.query(MovieContract.MovieEntry.CONTENT_URI,
+//                        null,
+//                        null,
+//                        null,
+//                        null);
+//
+//        if (cursor != null) {
+//            if (cursor.moveToFirst()) {
+//                do {
+//                    String title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.TITLE));
+//                    String movie_id = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID));
+//                    String poster = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.POSTER));
+//                    String backdrop = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.BACKDROP));
+//                    String overview = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.OVERVIEW));
+//                    String vote_average = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.VOTE_AVERAGE));
+//                    String release_date = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.DATE));
+//
+//                    Movie movie = new Movie(title, release_date, poster,
+//                            vote_average, overview, backdrop, movie_id);
+//                    mMovieArrayList.add(movie);
+//                } while (cursor.moveToNext());
+//            }
+//        }
+//
+//        if (cursor != null)
+//            cursor.close();
+//
+//        for (Movie movie : mMovieArrayList) {
+//            Log.d("FavoriteFragment List", movie.getTitle());
+//        }
+//
+//        mMovieAdapter = new MovieAdapter(getActivity(), mMovieArrayList);
+//        mMovieAdapter.notifyDataSetChanged();
+//        mRecyclerView.setAdapter(mMovieAdapter);
+//        return rootView;
+//    }
+//
+//    public static FavoriteFragment newInstance() {
+//        Bundle args = new Bundle();
+//        FavoriteFragment fragment = new FavoriteFragment();
+//        fragment.setArguments(args);
+//        return fragment;
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        mRecyclerView.setAdapter(mMovieAdapter);
+//        mMovieAdapter.notifyDataSetChanged();
+//    }
+//
+//    RecyclerView mRecyclerView;
+//    MovieAdapter mMovieAdapter;
+//}
 
+        return inflater.inflate(R.layout.fragment_movie_list, container, false);
+    }
+
+    public static FavoriteFragment newInstance() {
+        Bundle args = new Bundle();
+        FavoriteFragment fragment = new FavoriteFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onViewCreated(View v, Bundle b) {
         // Set column size to 2 for default and portrait
         // and 3 for landscape orientations
         int column = Integer.parseInt(getString(R.string.grid_portrait));
@@ -53,11 +140,13 @@ public class FavoriteFragment extends Fragment {
             column = Integer.parseInt(getString(R.string.grid_landscape));
         }
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), column));
 
         ArrayList<Movie> mMovieArrayList = new ArrayList<Movie>();
+        mMovieAdapter = new MovieAdapter(getActivity(), mMovieArrayList);
+        mRecyclerView.setAdapter(mMovieAdapter);
 
         ContentResolver resolver = getActivity().getContentResolver();
 
@@ -86,33 +175,7 @@ public class FavoriteFragment extends Fragment {
             }
         }
 
-        if (cursor != null)
-            cursor.close();
-
-        for (Movie movie : mMovieArrayList) {
-            Log.d("FavoriteFragment List", movie.getTitle());
-        }
-
-        mMovieAdapter = new MovieAdapter(getActivity(), mMovieArrayList);
-        mMovieAdapter.notifyDataSetChanged();
-        mRecyclerView.setAdapter(mMovieAdapter);
-        return rootView;
-    }
-
-    public static FavoriteFragment newInstance() {
-        Bundle args = new Bundle();
-        FavoriteFragment fragment = new FavoriteFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mRecyclerView.setAdapter(mMovieAdapter);
+        // notify adapter to recycle
         mMovieAdapter.notifyDataSetChanged();
     }
-
-    RecyclerView mRecyclerView;
-    MovieAdapter mMovieAdapter;
 }
