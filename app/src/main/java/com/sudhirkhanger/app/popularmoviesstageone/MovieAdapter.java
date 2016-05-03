@@ -54,8 +54,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public MovieViewHolder(View view) {
             super(view);
             mView = view;
-            mImageView = (ImageView) view.findViewById(R.id.imageview);
-            mTextView = (TextView) view.findViewById(R.id.list_title);
+            mImageView = (ImageView) view.findViewById(R.id.poster_imageview);
+            mTextView = (TextView) view.findViewById(R.id.list_title_textview);
         }
     }
 

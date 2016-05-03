@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="1dp">
 
     <ImageView
-        android:id="@+id/imageview"
+        android:id="@+id/poster_imageview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"/>
 
     <TextView
-        android:id="@+id/list_title"
+        android:id="@+id/list_title_textview"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_title_size"
-        android:layout_alignBottom="@id/imageview"
+        android:layout_alignBottom="@id/poster_imageview"
         android:background="@color/black"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
         android:textColor="@color/white"
         android:textSize="@dimen/list_title_text_size"/>
-</LinearLayout>
+</RelativeLayout>

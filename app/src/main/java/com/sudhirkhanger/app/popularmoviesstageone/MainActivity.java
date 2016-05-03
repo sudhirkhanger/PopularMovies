@@ -24,6 +24,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -36,20 +37,33 @@ import java.util.List;
  * list of movies.
  */
 
-public class PopularActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
+
+    private ViewPager mViewPager;
+    private static final String LOG = MainActivity.class.getSimpleName();
+    private static final String VIEWPAGER_POSITION = "currentItem";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_titles);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(mViewPager);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setupWithViewPager(mViewPager);
+
+        if (savedInstanceState != null) {
+            int pos = savedInstanceState.getInt(VIEWPAGER_POSITION, 0);
+            Log.d(LOG, "onCreate pos: " + pos);
+            mViewPager.setCurrentItem(pos);
+        } else {
+            Log.d(LOG, "onCreate savedInstanceState is null");
+        }
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -60,7 +74,7 @@ public class PopularActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    class ViewPagerAdapter extends FragmentStatePagerAdapter {
+    public static class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
@@ -109,5 +123,13 @@ public class PopularActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        int pos = mViewPager.getCurrentItem();
+        Log.d(LOG, "onSaveInstanceState pos: " + pos);
+        bundle.putInt(VIEWPAGER_POSITION, mViewPager.getCurrentItem());
     }
 }

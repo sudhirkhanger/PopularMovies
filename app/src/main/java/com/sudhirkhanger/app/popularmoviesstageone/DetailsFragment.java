@@ -34,7 +34,7 @@ import com.sudhirkhanger.app.popularmoviesstageone.Model.MovieContract;
 import java.text.DateFormatSymbols;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Fragment shows detailed information about the movies.
  */
 public class DetailsFragment extends Fragment {
 
@@ -74,7 +74,7 @@ public class DetailsFragment extends Fragment {
 
         final String title = parcelableExtra.getTitle();
         final String movie_id = parcelableExtra.getId();
-        final String poster = parcelableExtra.getReleaseDate();
+        final String poster = parcelableExtra.getPosterPath();
         final String backdrop = parcelableExtra.getBackdrops();
         final String overview = parcelableExtra.getOverView();
         final String vote_average = parcelableExtra.getVoteAverage();

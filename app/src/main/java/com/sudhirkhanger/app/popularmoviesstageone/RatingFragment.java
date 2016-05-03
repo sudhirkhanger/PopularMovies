@@ -32,7 +32,7 @@ import java.util.concurrent.ExecutionException;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Fetches movies in top_rated category.
  */
 public class RatingFragment extends Fragment {
 
@@ -70,6 +70,7 @@ public class RatingFragment extends Fragment {
         } catch (ExecutionException | InterruptedException ei) {
             ei.printStackTrace();
         }
+
         mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
         return rootView;
     }

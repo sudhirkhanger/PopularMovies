@@ -72,6 +72,7 @@ public class PopularFragment extends Fragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), column));
 
         ArrayList<Movie> mMovieArrayList = new ArrayList<Movie>();
+
         try {
             mMovieArrayList =
                     new FetchMoviesTask().execute(getString(R.string.url_popularity), PAGE).get();
