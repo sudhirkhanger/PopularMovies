@@ -24,7 +24,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -56,14 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-        if (savedInstanceState != null) {
-            int pos = savedInstanceState.getInt(VIEWPAGER_POSITION, 0);
-            Log.d(LOG, "onCreate pos: " + pos);
-            mViewPager.setCurrentItem(pos);
-        } else {
-            Log.d(LOG, "onCreate savedInstanceState is null");
-        }
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -123,13 +114,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle bundle) {
-        super.onSaveInstanceState(bundle);
-        int pos = mViewPager.getCurrentItem();
-        Log.d(LOG, "onSaveInstanceState pos: " + pos);
-        bundle.putInt(VIEWPAGER_POSITION, mViewPager.getCurrentItem());
     }
 }
