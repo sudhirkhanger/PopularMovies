@@ -63,7 +63,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public MovieAdapter.MovieViewHolder onCreateViewHolder(ViewGroup viewGroup,
                                                            int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext()).
-                inflate(R.layout.list_item, viewGroup, false);
+                inflate(R.layout.movie_list_item, viewGroup, false);
         return new MovieViewHolder(v);
     }
 
