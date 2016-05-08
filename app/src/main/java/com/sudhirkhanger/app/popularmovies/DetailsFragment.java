@@ -53,24 +53,7 @@ public class DetailsFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         Movie parcelableExtra = null;
 
-        if (intent == null || intent.getData() == null) {
-
-//            ArrayList<Movie> mMovieArrayList = new ArrayList<Movie>();
-
-//            try {
-//                mMovieArrayList =
-//                        new FetchMoviesTask().execute(getString(R.string.url_popularity), "1").get();
-//            } catch (ExecutionException | InterruptedException ei) {
-//                ei.printStackTrace();
-        }
-
-//            parcelableExtra = mMovieArrayList.get(0);
-
-//        } else {
-//            parcelableExtra = intent.getParcelableExtra(PARCEL_KEY);
-//        }
-
-        if (intent != null) {
+        if (intent != null && intent.getData() == null) {
             parcelableExtra = intent.getParcelableExtra(PARCEL_KEY);
         }
 

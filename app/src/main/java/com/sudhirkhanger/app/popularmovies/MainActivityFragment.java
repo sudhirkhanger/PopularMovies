@@ -79,6 +79,8 @@ public class MainActivityFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), column));
 
+        updateMovieList();
+
         mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
         return rootView;
     }
@@ -87,12 +89,6 @@ public class MainActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateMovieList();
     }
 
     @Override
