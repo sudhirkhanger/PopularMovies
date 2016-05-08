@@ -1,4 +1,4 @@
-package com.sudhirkhanger.app.popularmoviesstageone;
+package com.sudhirkhanger.app.popularmovies;
 
 import org.junit.Test;
 

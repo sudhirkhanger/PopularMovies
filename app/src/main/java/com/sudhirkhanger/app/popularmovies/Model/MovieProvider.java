@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.app.popularmoviesstageone.Model;
+package com.sudhirkhanger.app.popularmovies.Model;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;

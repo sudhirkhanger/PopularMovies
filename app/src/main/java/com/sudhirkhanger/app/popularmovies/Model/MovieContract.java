@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.app.popularmoviesstageone.Model;
+package com.sudhirkhanger.app.popularmovies.Model;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -24,7 +24,7 @@ import android.provider.BaseColumns;
 public class MovieContract {
 
     // Name of the content provider
-    public static final String CONTENT_AUTHORITY = "com.sudhirkhanger.app.popularmoviesstageone";
+    public static final String CONTENT_AUTHORITY = "com.sudhirkhanger.app.popularmovies";
 
     // add scheme to the content provide name
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.app.popularmoviesstageone;
+package com.sudhirkhanger.app.popularmovies;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,8 +29,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
-import com.sudhirkhanger.app.popularmoviesstageone.Model.MovieContract;
+import com.sudhirkhanger.app.popularmovies.Model.Movie;
+import com.sudhirkhanger.app.popularmovies.Model.MovieContract;
 
 import java.text.DateFormatSymbols;
 
@@ -49,7 +50,29 @@ public class DetailsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
 
-        Movie parcelableExtra = getActivity().getIntent().getParcelableExtra(PARCEL_KEY);
+        Intent intent = getActivity().getIntent();
+        Movie parcelableExtra = null;
+
+        if (intent == null || intent.getData() == null) {
+
+//            ArrayList<Movie> mMovieArrayList = new ArrayList<Movie>();
+
+//            try {
+//                mMovieArrayList =
+//                        new FetchMoviesTask().execute(getString(R.string.url_popularity), "1").get();
+//            } catch (ExecutionException | InterruptedException ei) {
+//                ei.printStackTrace();
+        }
+
+//            parcelableExtra = mMovieArrayList.get(0);
+
+//        } else {
+//            parcelableExtra = intent.getParcelableExtra(PARCEL_KEY);
+//        }
+
+        if (intent != null) {
+            parcelableExtra = intent.getParcelableExtra(PARCEL_KEY);
+        }
 
         TextView detailTitle = (TextView) rootView.findViewById(R.id.details_title);
         TextView detailReleaseYear = (TextView) rootView.findViewById(R.id.details_release_year);

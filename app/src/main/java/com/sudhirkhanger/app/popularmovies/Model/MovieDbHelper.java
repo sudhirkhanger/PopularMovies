@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.app.popularmoviesstageone.Model;
+package com.sudhirkhanger.app.popularmovies.Model;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.sudhirkhanger.app.popularmoviesstageone.Model.MovieContract.MovieEntry;
+import com.sudhirkhanger.app.popularmovies.Model.MovieContract.MovieEntry;
 
 public class MovieDbHelper extends SQLiteOpenHelper {
 

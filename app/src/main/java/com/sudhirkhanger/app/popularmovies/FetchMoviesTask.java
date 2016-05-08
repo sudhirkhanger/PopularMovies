@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.app.popularmoviesstageone;
+package com.sudhirkhanger.app.popularmovies;
 
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
+import com.sudhirkhanger.app.popularmovies.Model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;

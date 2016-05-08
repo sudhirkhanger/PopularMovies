@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.app.popularmoviesstageone;
+package com.sudhirkhanger.app.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
+import com.sudhirkhanger.app.popularmovies.Model.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +90,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     public int getItemCount() {
-        return mMovieList.size();
+        return mMovieList == null ? 0 : mMovieList.size();
     }
 }

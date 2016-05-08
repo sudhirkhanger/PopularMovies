@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.app.popularmoviesstageone;
+package com.sudhirkhanger.app.popularmovies;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +37,12 @@ public class DetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.movie_detail_container, new DetailsFragment())
+                    .commit();
+        }
     }
 
     @Override

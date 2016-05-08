@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.app.popularmoviesstageone;
+package com.sudhirkhanger.app.popularmovies;
 
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,8 +28,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sudhirkhanger.app.popularmoviesstageone.Model.Movie;
-import com.sudhirkhanger.app.popularmoviesstageone.Model.MovieContract;
+import com.sudhirkhanger.app.popularmovies.Model.Movie;
+import com.sudhirkhanger.app.popularmovies.Model.MovieContract;
 
 import java.util.ArrayList;
 
@@ -51,6 +52,10 @@ public class FavoriteFragment extends Fragment {
             column = Integer.parseInt(getString(R.string.grid_portrait));
         } else if (getResources().getConfiguration().orientation == 2) {
             column = Integer.parseInt(getString(R.string.grid_landscape));
+        }
+
+        if (getActivity().findViewById(R.id.movie_detail_container) != null) {
+            column = Integer.parseInt("2");
         }
 
         RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
@@ -92,6 +97,10 @@ public class FavoriteFragment extends Fragment {
         MovieAdapter mMovieAdapter = new MovieAdapter(getActivity(), mMovieArrayList);
         mRecyclerView.setAdapter(mMovieAdapter);
         mMovieAdapter.notifyDataSetChanged();
+
+        Intent intent = new Intent(getContext(), DetailsActivity.class);
+        intent.putExtra("movie_parcel", mMovieArrayList.get(0));
+
         return rootView;
     }
 

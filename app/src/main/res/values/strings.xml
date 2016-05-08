@@ -7,9 +7,12 @@
     <string name="popularity">Popularity</string>
     <string name="rating">Rating</string>
     <string name="favorite">Favorite</string>
+    <string name="sort_title">Sort By</string>
 
     <string name="url_popularity">popular</string>
     <string name="url_top_rated">top_rated</string>
+    <string name="url_favorite">favorite</string>
+    <string name="perf_sort">sort</string>
 
     <string name="grid_portrait">2</string>
     <string name="grid_landscape">3</string>

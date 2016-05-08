@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.sudhirkhanger.app.popularmoviesstageone">
+          package="com.sudhirkhanger.app.popularmovies">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.sudhirkhanger.app.popularmovies.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,18 +21,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailsActivity"
+            android:name="com.sudhirkhanger.app.popularmovies.DetailsActivity"
             android:label="@string/title_activity_details"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="com.sudhirkhanger.app.popularmovies.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value="com.sudhirkhanger.app.popularmovies.MainActivity"/>
         </activity>
 
         <provider
-            android:name=".Model.MovieProvider"
-            android:authorities="com.sudhirkhanger.app.popularmoviesstageone"/>
+            android:name="com.sudhirkhanger.app.popularmovies.Model.MovieProvider"
+            android:authorities="com.sudhirkhanger.app.popularmovies"/>
 
     </application>
 
