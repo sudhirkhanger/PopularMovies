@@ -49,6 +49,11 @@ public class MainActivityFragment extends Fragment {
 
     private static final String LOG = MainActivityFragment.class.getSimpleName();
 
+    private static final String URL_POPULARITY = "popular";
+    private static final String URL_RATING = "top_rated";
+    private static final String URL_FAVORITE = "favorite";
+    private static final String PREF = "sort";
+
     public MainActivityFragment() {
     }
 
@@ -92,6 +97,17 @@ public class MainActivityFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        String str = mSettings.getString(PREF, URL_POPULARITY);
+        if (str.equals(URL_FAVORITE)) {
+            getDataFromDB();
+            mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main_fragment, menu);
     }
@@ -100,24 +116,21 @@ public class MainActivityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.popularity:
-                mEditor.putString(getResources().getString(R.string.perf_sort),
-                        getResources().getString(R.string.url_popularity));
+                mEditor.putString(PREF, URL_POPULARITY);
                 mEditor.apply();
                 updateMovieList();
                 item.setChecked(true);
                 Log.d(LOG, "onOptionsItemSelected: popularity");
                 return true;
             case R.id.rating:
-                mEditor.putString(getResources().getString(R.string.perf_sort),
-                        getResources().getString(R.string.url_top_rated));
+                mEditor.putString(PREF, URL_RATING);
                 mEditor.apply();
                 updateMovieList();
                 item.setChecked(true);
                 Log.d(LOG, "onOptionsItemSelected: rating");
                 return true;
             case R.id.favorite:
-                mEditor.putString(getResources().getString(R.string.perf_sort),
-                        getResources().getString(R.string.url_favorite));
+                mEditor.putString(PREF, URL_FAVORITE);
                 mEditor.apply();
                 updateMovieList();
                 item.setChecked(true);
@@ -131,25 +144,27 @@ public class MainActivityFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        String sortBy = mSettings.getString(getResources().getString(R.string.perf_sort),
-                getResources().getString(R.string.url_popularity));
+        String sortBy = mSettings.getString(PREF, URL_POPULARITY);
 
-        if (sortBy.equals(getResources().getString(R.string.url_popularity))) {
-            menu.findItem(R.id.popularity).setChecked(true);
-        } else if (sortBy.equals(getResources().getString(R.string.url_top_rated))) {
-            menu.findItem(R.id.rating).setChecked(true);
-        } else if (sortBy.equals(getResources().getString(R.string.url_favorite))) {
-            menu.findItem(R.id.favorite).setChecked(true);
+        switch (sortBy) {
+            case URL_POPULARITY:
+                menu.findItem(R.id.popularity).setChecked(true);
+                break;
+            case URL_RATING:
+                menu.findItem(R.id.rating).setChecked(true);
+                break;
+            case URL_FAVORITE:
+                menu.findItem(R.id.favorite).setChecked(true);
+                break;
         }
     }
 
     private void updateMovieList() {
         mMovieArrayList = new ArrayList<>();
-        String sortBy = mSettings.getString(getResources().getString(R.string.perf_sort),
-                getResources().getString(R.string.url_popularity));
+        String sortBy = mSettings.getString(PREF, URL_POPULARITY);
 
-        if (sortBy.equals(getResources().getString(R.string.url_popularity)) ||
-                sortBy.equals(getResources().getString(R.string.url_top_rated))) {
+        if (sortBy.equals(URL_POPULARITY) ||
+                sortBy.equals(URL_RATING)) {
 
             try {
                 mMovieArrayList =
@@ -157,38 +172,41 @@ public class MainActivityFragment extends Fragment {
             } catch (ExecutionException | InterruptedException ei) {
                 ei.printStackTrace();
             }
-        } else if (sortBy.equals(getResources().getString(R.string.url_favorite))) {
-            ContentResolver resolver = getActivity().getContentResolver();
-            Cursor cursor =
-                    resolver.query(MovieContract.MovieEntry.CONTENT_URI,
-                            null,
-                            null,
-                            null,
-                            null);
-
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    do {
-                        String title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.TITLE));
-                        String movie_id = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID));
-                        String poster = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.POSTER));
-                        String backdrop = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.BACKDROP));
-                        String overview = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.OVERVIEW));
-                        String vote_average = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.VOTE_AVERAGE));
-                        String release_date = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.DATE));
-
-                        Movie movie = new Movie(title, release_date, poster,
-                                vote_average, overview, backdrop, movie_id);
-                        mMovieArrayList.add(movie);
-                    } while (cursor.moveToNext());
-                }
-            }
-
-            if (cursor != null)
-                cursor.close();
+        } else if (sortBy.equals(URL_FAVORITE)) {
+            getDataFromDB();
         }
-
         mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
         mRecyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    private void getDataFromDB() {
+        ContentResolver resolver = getActivity().getContentResolver();
+        Cursor cursor =
+                resolver.query(MovieContract.MovieEntry.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        null);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    String title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.TITLE));
+                    String movie_id = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID));
+                    String poster = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.POSTER));
+                    String backdrop = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.BACKDROP));
+                    String overview = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.OVERVIEW));
+                    String vote_average = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.VOTE_AVERAGE));
+                    String release_date = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.DATE));
+
+                    Movie movie = new Movie(title, release_date, poster,
+                            vote_average, overview, backdrop, movie_id);
+                    mMovieArrayList.add(movie);
+                } while (cursor.moveToNext());
+            }
+        }
+
+        if (cursor != null)
+            cursor.close();
     }
 }
