@@ -99,8 +99,10 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(LOG, "onResume() reached");
         String str = mSettings.getString(PREF, URL_POPULARITY);
         if (str.equals(URL_FAVORITE)) {
+            Log.d(LOG, "onResume() getDataFromDB");
             getDataFromDB();
             mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
             mRecyclerView.getAdapter().notifyDataSetChanged();
@@ -180,6 +182,7 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void getDataFromDB() {
+        mMovieArrayList = new ArrayList<>();
         ContentResolver resolver = getActivity().getContentResolver();
         Cursor cursor =
                 resolver.query(MovieContract.MovieEntry.CONTENT_URI,
