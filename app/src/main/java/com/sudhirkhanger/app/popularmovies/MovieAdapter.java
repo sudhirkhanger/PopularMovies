@@ -19,6 +19,7 @@ package com.sudhirkhanger.app.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,25 +29,20 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.sudhirkhanger.app.popularmovies.Model.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
-
-/**
- * This adapter feeds the RecyclerView.
- */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private List<Movie> mMovieList;
     private Context mContext;
-    private static final String PARCEL_KEY = "movie_parcel";
+    private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
-    public MovieAdapter(Context context, ArrayList<Movie> movieList) {
-        mMovieList = movieList;
-        mContext = context;
+    public MovieAdapter(Context context, List<Movie> movieList) {
+        this.mMovieList = movieList;
+        this.mContext = context;
     }
 
-    public static class MovieViewHolder extends RecyclerView.ViewHolder {
+    public class MovieViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
         public TextView mTextView;
         public View mView;
@@ -75,9 +71,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             public void onClick(View v) {
                 Context context = v.getContext();
 
-                Movie movieParcel = mMovieList.get(pos);
-                Intent intent = new Intent(context, DetailsActivity.class);
-                intent.putExtra(PARCEL_KEY, movieParcel);
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra(DetailFragment.DETAILS_OBJECT, mMovieList.get(pos));
 
                 context.startActivity(intent);
             }

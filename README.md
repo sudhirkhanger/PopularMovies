@@ -18,6 +18,10 @@ https://developer.android.com/training/material/lists-cards.html
 
 http://stackoverflow.com/a/29166336/3034693
 
+* Recycler onItemClickListener
+
+http://antonioleiva.com/recyclerview-listener/
+
     Copyright 2016 Sudhir Khanger
         	
     Licensed under the Apache License, Version 2.0 (the "License");

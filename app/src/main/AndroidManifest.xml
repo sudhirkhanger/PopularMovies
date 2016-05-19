@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.sudhirkhanger.app.popularmovies.DetailsActivity"
+            android:name=".DetailActivity"
             android:label="@string/title_activity_details"
             android:parentActivityName="com.sudhirkhanger.app.popularmovies.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">

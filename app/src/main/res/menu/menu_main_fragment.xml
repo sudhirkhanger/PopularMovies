@@ -33,7 +33,7 @@
                     android:title="@string/rating"/>
                 <item
                     android:id="@+id/favorite"
-                    android:title="@string/rating"/>
+                    android:title="@string/favorite"/>
             </group>
         </menu>
     </item>

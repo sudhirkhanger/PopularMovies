@@ -22,12 +22,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.sudhirkhanger.app.popularmovies.Model.Movie;
+
 /**
  * This activity hosts Details Fragment which
  * shows detailed information about a movie.
  */
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity {
+
+    private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +43,14 @@ public class DetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
+            Bundle args = new Bundle();
+            Movie movie = getIntent().getParcelableExtra(DetailFragment.DETAILS_OBJECT);
+            DetailFragment detailFragment =
+                    DetailFragment.newInstance(movie);
+            args.putParcelable(DetailFragment.DETAILS_OBJECT, movie);
+            detailFragment.setArguments(args);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container, new DetailsFragment())
+                    .add(R.id.movie_detail_container, detailFragment)
                     .commit();
         }
     }
@@ -57,11 +67,6 @@ public class DetailsActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-//        if (id == android.R.id.home) {
-//            onBackPressed();
-//            return true;
-//        }
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {

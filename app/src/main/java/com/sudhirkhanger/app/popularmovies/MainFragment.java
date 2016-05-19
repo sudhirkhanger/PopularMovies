@@ -38,23 +38,25 @@ import com.sudhirkhanger.app.popularmovies.Model.MovieContract;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-public class MainActivityFragment extends Fragment {
+public class MainFragment extends Fragment {
 
     private ArrayList<Movie> mMovieArrayList = new ArrayList<Movie>();
     private static final String PAGE = "1";
+    private static final int GRID = 2;
     private RecyclerView mRecyclerView;
 
     private SharedPreferences mSettings;
     private SharedPreferences.Editor mEditor;
 
-    private static final String LOG = MainActivityFragment.class.getSimpleName();
+    private static final String LOG = MainFragment.class.getSimpleName();
 
     private static final String URL_POPULARITY = "popular";
     private static final String URL_RATING = "top_rated";
     private static final String URL_FAVORITE = "favorite";
     private static final String PREF = "sort";
 
-    public MainActivityFragment() {
+
+    public MainFragment() {
     }
 
     @Override
@@ -63,30 +65,18 @@ public class MainActivityFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
-        // Set column size to 2 for default and portrait
-        // and 3 for landscape orientations
-        int column = Integer.parseInt(getString(R.string.grid_portrait));
-        if (getResources().getConfiguration().orientation == 1) {
-            column = Integer.parseInt(getString(R.string.grid_portrait));
-        } else if (getResources().getConfiguration().orientation == 2) {
-            column = Integer.parseInt(getString(R.string.grid_landscape));
-        }
-
-        if (getActivity().findViewById(R.id.movie_detail_container) != null) {
-            column = Integer.parseInt("2");
-        }
-
         mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mSettings.edit();
         mEditor.apply();
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), column));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GRID));
 
         updateMovieList();
 
         mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
+
         return rootView;
     }
 
@@ -181,6 +171,7 @@ public class MainActivityFragment extends Fragment {
         mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
+    //TODO: replace null with column constants
     private void getDataFromDB() {
         mMovieArrayList = new ArrayList<>();
         ContentResolver resolver = getActivity().getContentResolver();

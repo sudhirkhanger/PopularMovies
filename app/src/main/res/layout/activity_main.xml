@@ -26,7 +26,7 @@
 
     <fragment
         android:id="@+id/fragment_main"
-        android:name="com.sudhirkhanger.app.popularmovies.MainActivityFragment"
+        android:name="com.sudhirkhanger.app.popularmovies.MainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>

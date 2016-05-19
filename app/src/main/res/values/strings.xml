@@ -9,9 +9,6 @@
     <string name="favorite">Favorite</string>
     <string name="sort_title">Sort By</string>
 
-    <string name="grid_portrait">2</string>
-    <string name="grid_landscape">3</string>
-
     <string name="favorite_Button">Favorite</string>
 
 </resources>
