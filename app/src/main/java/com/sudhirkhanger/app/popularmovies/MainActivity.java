@@ -16,11 +16,14 @@
 
 package com.sudhirkhanger.app.popularmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.sudhirkhanger.app.popularmovies.Model.Movie;
 
 /**
  * This is the main activity which
@@ -28,9 +31,11 @@ import android.view.MenuItem;
  * list of movies.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements MainFragment.Callback {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +46,14 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (findViewById(R.id.movie_detail_container) != null) {
+            mTwoPane = true;
             if (savedInstanceState == null) {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_detail_container, new DetailFragment())
                         .commit();
             }
+        } else {
+            mTwoPane = false;
         }
     }
 
@@ -69,5 +77,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemSeleted(Movie movie) {
+        if (mTwoPane) {
+            DetailFragment detailFragment =
+                    DetailFragment.newInstance(movie);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container,
+                            detailFragment).commit();
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra(DetailFragment.DETAILS_OBJECT, movie);
+            startActivity(intent);
+        }
     }
 }

@@ -17,7 +17,6 @@
 package com.sudhirkhanger.app.popularmovies;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,11 +34,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private List<Movie> mMovieList;
     private Context mContext;
+    private final OnItemClickListener mListener;
+
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
-    public MovieAdapter(Context context, List<Movie> movieList) {
+    public MovieAdapter(Context context,
+                        List<Movie> movieList,
+                        OnItemClickListener listener) {
         this.mMovieList = movieList;
         this.mContext = context;
+        this.mListener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Movie movie);
     }
 
     public class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -52,6 +60,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             mView = view;
             mImageView = (ImageView) view.findViewById(R.id.poster_imageview);
             mTextView = (TextView) view.findViewById(R.id.list_title_textview);
+        }
+
+        public void bind(final Movie movie,
+                         final OnItemClickListener listener) {
+            mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG, "onClick reached");
+                    listener.onItemClick(movie);
+                }
+            });
         }
     }
 
@@ -66,22 +85,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(final MovieViewHolder movieViewHolder,
                                  final int pos) {
-        movieViewHolder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-
-                Intent intent = new Intent(context, DetailActivity.class);
-                intent.putExtra(DetailFragment.DETAILS_OBJECT, mMovieList.get(pos));
-
-                context.startActivity(intent);
-            }
-        });
+//        movieViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Context context = v.getContext();
+//
+//                Intent intent = new Intent(context, DetailActivity.class);
+//                intent.putExtra(DetailFragment.DETAILS_OBJECT, mMovieList.get(pos));
+//
+//                context.startActivity(intent);
+//            }
+//        });
 
         Picasso.with(mContext)
                 .load(mMovieList.get(pos).getPosterPath())
                 .into(movieViewHolder.mImageView);
         movieViewHolder.mTextView.setText(mMovieList.get(pos).getTitle());
+
+        movieViewHolder.bind(mMovieList.get(pos), mListener);
     }
 
     public int getItemCount() {

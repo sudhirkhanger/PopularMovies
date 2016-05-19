@@ -17,6 +17,7 @@
 package com.sudhirkhanger.app.popularmovies;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -48,12 +49,16 @@ public class MainFragment extends Fragment {
     private SharedPreferences mSettings;
     private SharedPreferences.Editor mEditor;
 
-    private static final String LOG = MainFragment.class.getSimpleName();
+    private static final String LOG_TAG = MainFragment.class.getSimpleName();
 
     private static final String URL_POPULARITY = "popular";
     private static final String URL_RATING = "top_rated";
     private static final String URL_FAVORITE = "favorite";
     private static final String PREF = "sort";
+
+    public interface Callback {
+        void onItemSeleted(Movie movie);
+    }
 
 
     public MainFragment() {
@@ -75,7 +80,18 @@ public class MainFragment extends Fragment {
 
         updateMovieList();
 
-        mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
+//        mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
+
+        mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
+                mMovieArrayList,
+                new MovieAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Movie movie) {
+                        Log.d(LOG_TAG, "onItemClick " + movie.toString());
+//                        startDetailsActivity(movie);
+                        initiateCallback(movie);
+                    }
+                }));
 
         return rootView;
     }
@@ -89,12 +105,22 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(LOG, "onResume() reached");
+        Log.d(LOG_TAG, "onResume() reached");
         String str = mSettings.getString(PREF, URL_POPULARITY);
         if (str.equals(URL_FAVORITE)) {
-            Log.d(LOG, "onResume() getDataFromDB");
+            Log.d(LOG_TAG, "onResume() getDataFromDB");
             getDataFromDB();
-            mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
+//            mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
+            mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
+                    mMovieArrayList,
+                    new MovieAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(Movie movie) {
+                            Log.d(LOG_TAG, "onItemClick " + movie.toString());
+//                            startDetailsActivity(movie);
+                            initiateCallback(movie);
+                        }
+                    }));
             mRecyclerView.getAdapter().notifyDataSetChanged();
         }
     }
@@ -112,21 +138,21 @@ public class MainFragment extends Fragment {
                 mEditor.apply();
                 updateMovieList();
                 item.setChecked(true);
-                Log.d(LOG, "onOptionsItemSelected: popularity");
+                Log.d(LOG_TAG, "onOptionsItemSelected: popularity");
                 return true;
             case R.id.rating:
                 mEditor.putString(PREF, URL_RATING);
                 mEditor.apply();
                 updateMovieList();
                 item.setChecked(true);
-                Log.d(LOG, "onOptionsItemSelected: rating");
+                Log.d(LOG_TAG, "onOptionsItemSelected: rating");
                 return true;
             case R.id.favorite:
                 mEditor.putString(PREF, URL_FAVORITE);
                 mEditor.apply();
                 updateMovieList();
                 item.setChecked(true);
-                Log.d(LOG, "onOptionsItemSelected: favorite");
+                Log.d(LOG_TAG, "onOptionsItemSelected: favorite");
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -167,7 +193,17 @@ public class MainFragment extends Fragment {
         } else if (sortBy.equals(URL_FAVORITE)) {
             getDataFromDB();
         }
-        mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
+//        mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
+        mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
+                mMovieArrayList,
+                new MovieAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Movie movie) {
+                        Log.d(LOG_TAG, "onItemClick " + movie.toString());
+//                        startDetailsActivity(movie);
+                        initiateCallback(movie);
+                    }
+                }));
         mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
@@ -202,5 +238,15 @@ public class MainFragment extends Fragment {
 
         if (cursor != null)
             cursor.close();
+    }
+
+    public void startDetailsActivity(Movie movie) {
+        Intent i = new Intent(getActivity(), DetailActivity.class);
+        i.putExtra(DetailFragment.DETAILS_OBJECT, movie);
+        startActivity(i);
+    }
+
+    public void initiateCallback(Movie movie) {
+        ((Callback) getActivity()).onItemSeleted(movie);
     }
 }
