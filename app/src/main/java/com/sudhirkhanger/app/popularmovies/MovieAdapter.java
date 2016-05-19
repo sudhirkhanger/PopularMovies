@@ -85,18 +85,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(final MovieViewHolder movieViewHolder,
                                  final int pos) {
-//        movieViewHolder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Context context = v.getContext();
-//
-//                Intent intent = new Intent(context, DetailActivity.class);
-//                intent.putExtra(DetailFragment.DETAILS_OBJECT, mMovieList.get(pos));
-//
-//                context.startActivity(intent);
-//            }
-//        });
-
         Picasso.with(mContext)
                 .load(mMovieList.get(pos).getPosterPath())
                 .into(movieViewHolder.mImageView);

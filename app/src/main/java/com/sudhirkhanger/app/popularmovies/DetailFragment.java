@@ -40,11 +40,10 @@ import java.text.DateFormatSymbols;
  */
 public class DetailFragment extends Fragment {
 
-    private static final String LOG_TAG = DetailFragment.class.getSimpleName();
-
     private ContentResolver resolver;
 
     static final String DETAILS_OBJECT = "movie_object";
+    private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
     public DetailFragment() {
     }
@@ -63,24 +62,33 @@ public class DetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
         getActivity().setTitle(R.string.app_name);
 
-        Movie parcelableExtra = null;
-
+        Movie movie = null;
         Bundle bundle = getArguments();
         if (bundle != null) {
-            parcelableExtra = bundle.getParcelable(DETAILS_OBJECT);
+            movie = bundle.getParcelable(DETAILS_OBJECT);
         } else if (savedInstanceState != null) {
-            parcelableExtra = savedInstanceState.getParcelable(DETAILS_OBJECT);
+            movie = savedInstanceState.getParcelable(DETAILS_OBJECT);
         }
 
-        if (parcelableExtra != null) {
+        resolver = getActivity().getContentResolver();
 
-            final String title = parcelableExtra.getTitle();
-            final String movie_id = parcelableExtra.getId();
-            final String poster = parcelableExtra.getPosterPath();
-            final String backdrop = parcelableExtra.getBackdrops();
-            final String overview = parcelableExtra.getOverView();
-            final String vote_average = parcelableExtra.getVoteAverage();
-            final String release_date = parcelableExtra.getReleaseDate();
+        final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
+        favoriteButton.setVisibility(View.INVISIBLE);
+        View separator = rootView.findViewById(R.id.separator);
+        separator.setVisibility(View.INVISIBLE);
+
+        if (movie != null) {
+
+            favoriteButton.setVisibility(View.VISIBLE);
+            separator.setVisibility(View.VISIBLE);
+
+            final String title = movie.getTitle();
+            final String movie_id = movie.getId();
+            final String poster = movie.getPosterPath();
+            final String backdrop = movie.getBackdrops();
+            final String overview = movie.getOverView();
+            final String vote_average = movie.getVoteAverage();
+            final String release_date = movie.getReleaseDate();
 
             TextView detailTitle = (TextView) rootView.findViewById(R.id.details_title);
             TextView detailReleaseYear = (TextView) rootView.findViewById(R.id.details_release_year);
@@ -89,24 +97,22 @@ public class DetailFragment extends Fragment {
             TextView detailOverview = (TextView) rootView.findViewById(R.id.details_overview);
             ImageView detailBackdrops = (ImageView) rootView.findViewById(R.id.details_backdrop);
             ImageView detailThumbnail = (ImageView) rootView.findViewById(R.id.details_thumbnail);
-            final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
+//            final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
 
-            detailTitle.setText(parcelableExtra.getTitle());
-            detailReleaseYear.setText(getYear((parcelableExtra.getReleaseDate())));
-            detailReleaseMonth.setText(getMonth(parcelableExtra.getReleaseDate()));
-            detailVoteAverage.setText(parcelableExtra.getVoteAverage() + "/10");
-            detailOverview.setText(parcelableExtra.getOverView());
+            detailTitle.setText(movie.getTitle());
+            detailReleaseYear.setText(getYear((movie.getReleaseDate())));
+            detailReleaseMonth.setText(getMonth(movie.getReleaseDate()));
+            detailVoteAverage.setText(movie.getVoteAverage() + "/10");
+            detailOverview.setText(movie.getOverView());
             Picasso.with(rootView.getContext())
-                    .load(parcelableExtra.getBackdrops())
+                    .load(movie.getBackdrops())
                     .into(detailBackdrops);
             Picasso.with(rootView.getContext())
-                    .load(parcelableExtra.getPosterPath())
+                    .load(movie.getPosterPath())
                     .into(detailThumbnail);
 
-            resolver = getActivity().getContentResolver();
-
             if (isRowExist(movie_id)) {
-                favoriteButton.setText("unfavorite");
+                favoriteButton.setText(R.string.unfavorite_Button);
             }
 
             favoriteButton.setOnClickListener(new View.OnClickListener() {
@@ -119,10 +125,10 @@ public class DetailFragment extends Fragment {
                                 overview,
                                 vote_average,
                                 release_date);
-                        favoriteButton.setText("unfavorite");
+                        favoriteButton.setText(R.string.unfavorite_Button);
                     } else {
                         removeMovie(movie_id);
-                        favoriteButton.setText("favorite");
+                        favoriteButton.setText(R.string.favorite_Button);
                     }
                 }
             });

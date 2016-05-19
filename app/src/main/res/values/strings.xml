@@ -10,5 +10,6 @@
     <string name="sort_title">Sort By</string>
 
     <string name="favorite_Button">Favorite</string>
+    <string name="unfavorite_Button">Unfavorite</string>
 
 </resources>
