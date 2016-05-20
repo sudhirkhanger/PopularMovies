@@ -33,6 +33,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.sudhirkhanger.app.popularmovies.Adapters.MovieAdapter;
+import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchMoviesTask;
 import com.sudhirkhanger.app.popularmovies.Model.Movie;
 import com.sudhirkhanger.app.popularmovies.Model.MovieContract;
 

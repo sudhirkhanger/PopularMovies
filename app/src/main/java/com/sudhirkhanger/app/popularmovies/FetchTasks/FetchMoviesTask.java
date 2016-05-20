@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.app.popularmovies;
+package com.sudhirkhanger.app.popularmovies.FetchTasks;
 
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.sudhirkhanger.app.popularmovies.BuildConfig;
 import com.sudhirkhanger.app.popularmovies.Model.Movie;
 
 import org.json.JSONArray;

@@ -21,6 +21,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +32,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.sudhirkhanger.app.popularmovies.Adapters.TrailerAdapter;
+import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchReviews;
+import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchTrailers;
 import com.sudhirkhanger.app.popularmovies.Model.Movie;
 import com.sudhirkhanger.app.popularmovies.Model.MovieContract;
+import com.sudhirkhanger.app.popularmovies.Model.Review;
+import com.sudhirkhanger.app.popularmovies.Model.Trailer;
 
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Fragment shows detailed information about the movies.
@@ -132,6 +141,38 @@ public class DetailFragment extends Fragment {
                     }
                 }
             });
+
+            trailerView(movie, rootView);
+
+//            // Trailer print keys
+//            ArrayList<Trailer> mTrailerArrayList = new ArrayList<>();
+//            try {
+//                mTrailerArrayList =
+//                        new FetchTrailers().execute(movie.getId()).get();
+//            } catch (ExecutionException | InterruptedException ei) {
+//                ei.printStackTrace();
+//            }
+//
+//            if (mTrailerArrayList != null) {
+//                for (Trailer trailer : mTrailerArrayList) {
+//                    Log.d(LOG_TAG, trailer.toString());
+//                }
+//            }
+
+            // Trailer print keys
+            ArrayList<Review> mReviewsArrayList = new ArrayList<>();
+            try {
+                mReviewsArrayList =
+                        new FetchReviews().execute(movie.getId()).get();
+            } catch (ExecutionException | InterruptedException ei) {
+                ei.printStackTrace();
+            }
+
+            if (mReviewsArrayList != null) {
+                for (Review review : mReviewsArrayList) {
+                    Log.d(LOG_TAG, review.toString());
+                }
+            }
         }
         return rootView;
     }
@@ -191,5 +232,27 @@ public class DetailFragment extends Fragment {
         resolver.delete(MovieContract.MovieEntry.CONTENT_URI,
                 MovieContract.MovieEntry.MOVIE_ID + " = ?",
                 new String[]{movie_id});
+    }
+
+    private void trailerView(Movie movie, View view) {
+
+        RecyclerView trailerRecyclerView =
+                (RecyclerView) view.findViewById(R.id.trailer_recyclerview);
+        trailerRecyclerView.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager layoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        trailerRecyclerView.setLayoutManager(layoutManager);
+
+        ArrayList<Trailer> mTrailerArrayList = new ArrayList<>();
+
+        try {
+            mTrailerArrayList =
+                    new FetchTrailers().execute(movie.getId()).get();
+        } catch (ExecutionException | InterruptedException ei) {
+            ei.printStackTrace();
+        }
+
+        trailerRecyclerView.setAdapter(new TrailerAdapter(view.getContext(), mTrailerArrayList));
     }
 }
