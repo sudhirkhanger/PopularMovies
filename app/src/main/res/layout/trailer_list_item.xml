@@ -15,9 +15,12 @@
   ~ limitations under the License.
   -->
 
-<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/imagebutton"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+           android:id="@+id/trailer_imageview"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:adjustViewBounds="true"
+           android:padding="1dp"
+           android:scaleType="centerCrop">
 
-</ImageButton>
+</ImageView>

@@ -69,7 +69,6 @@ public class DetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
-        getActivity().setTitle(R.string.app_name);
 
         Movie movie = null;
         Bundle bundle = getArguments();
@@ -83,15 +82,14 @@ public class DetailFragment extends Fragment {
 
         final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
         favoriteButton.setVisibility(View.INVISIBLE);
-        View separator = rootView.findViewById(R.id.separator);
-        separator.setVisibility(View.INVISIBLE);
 
         if (movie != null) {
 
+
             favoriteButton.setVisibility(View.VISIBLE);
-            separator.setVisibility(View.VISIBLE);
 
             final String title = movie.getTitle();
+            getActivity().setTitle(title);
             final String movie_id = movie.getId();
             final String poster = movie.getPosterPath();
             final String backdrop = movie.getBackdrops();
@@ -143,21 +141,6 @@ public class DetailFragment extends Fragment {
             });
 
             trailerView(movie, rootView);
-
-//            // Trailer print keys
-//            ArrayList<Trailer> mTrailerArrayList = new ArrayList<>();
-//            try {
-//                mTrailerArrayList =
-//                        new FetchTrailers().execute(movie.getId()).get();
-//            } catch (ExecutionException | InterruptedException ei) {
-//                ei.printStackTrace();
-//            }
-//
-//            if (mTrailerArrayList != null) {
-//                for (Trailer trailer : mTrailerArrayList) {
-//                    Log.d(LOG_TAG, trailer.toString());
-//                }
-//            }
 
             // Trailer print keys
             ArrayList<Review> mReviewsArrayList = new ArrayList<>();

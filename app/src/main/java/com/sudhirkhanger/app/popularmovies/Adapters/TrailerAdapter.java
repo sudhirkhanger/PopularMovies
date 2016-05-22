@@ -17,11 +17,13 @@
 package com.sudhirkhanger.app.popularmovies.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.sudhirkhanger.app.popularmovies.Model.Trailer;
@@ -31,15 +33,17 @@ import java.util.ArrayList;
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
 
+    private static final String LOG = Trailer.class.getSimpleName();
+
     private ArrayList<Trailer> mTrailerArrayList;
     private Context mContext;
 
     public static class TrailerViewHolder extends RecyclerView.ViewHolder {
-        public ImageButton mImageButton;
+        public ImageView mImageView;
 
         public TrailerViewHolder(View view) {
             super(view);
-            mImageButton = (ImageButton) view.findViewById(R.id.imagebutton);
+            mImageView = (ImageView) view.findViewById(R.id.trailer_imageview);
         }
     }
 
@@ -58,10 +62,20 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     }
 
     @Override
-    public void onBindViewHolder(TrailerViewHolder holder, int position) {
+    public void onBindViewHolder(TrailerViewHolder holder, final int position) {
+
+        holder.mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(mTrailerArrayList.get(position).getLink()));
+                v.getContext().startActivity(intent);
+            }
+        });
+
         Picasso.with(mContext)
                 .load(mTrailerArrayList.get(position).getImage())
-                .into(holder.mImageButton);
+                .into(holder.mImageView);
     }
 
     @Override
