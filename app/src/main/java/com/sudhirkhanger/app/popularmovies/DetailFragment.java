@@ -92,13 +92,7 @@ public class DetailFragment extends Fragment {
 
         resolver = getActivity().getContentResolver();
 
-        final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
-        favoriteButton.setVisibility(View.INVISIBLE);
-
         if (movie != null) {
-
-
-            favoriteButton.setVisibility(View.VISIBLE);
 
             final String title = movie.getTitle();
             getActivity().setTitle(title);
@@ -109,6 +103,9 @@ public class DetailFragment extends Fragment {
             final String vote_average = movie.getVoteAverage();
             final String release_date = movie.getReleaseDate();
 
+            final View view = rootView.findViewById(R.id.details_layout);
+            view.setVisibility(View.VISIBLE);
+
             TextView detailTitle = (TextView) rootView.findViewById(R.id.details_title);
             TextView detailReleaseYear = (TextView) rootView.findViewById(R.id.details_release_year);
             TextView detailReleaseMonth = (TextView) rootView.findViewById(R.id.details_release_month);
@@ -116,6 +113,7 @@ public class DetailFragment extends Fragment {
             TextView detailOverview = (TextView) rootView.findViewById(R.id.details_overview);
             ImageView detailBackdrops = (ImageView) rootView.findViewById(R.id.details_backdrop);
             ImageView detailThumbnail = (ImageView) rootView.findViewById(R.id.details_thumbnail);
+            final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
 
             detailTitle.setText(movie.getTitle());
             detailReleaseYear.setText(getYear((movie.getReleaseDate())));
