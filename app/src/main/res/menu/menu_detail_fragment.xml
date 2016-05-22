@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2016 Sudhir Khanger
   ~
@@ -15,11 +14,12 @@
   ~ limitations under the License.
   -->
 
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-           android:id="@+id/trailer_imageview"
-           android:layout_width="200dp"
-           android:layout_height="130dp"
-           android:padding="1dp"
-           android:scaleType="centerCrop">
-
-</ImageView>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/menu_yt_share"
+        android:title="@string/share_yt_action"
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+        app:showAsAction="ifRoom"/>
+</menu>

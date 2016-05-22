@@ -18,13 +18,19 @@ package com.sudhirkhanger.app.popularmovies;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,6 +38,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.sudhirkhanger.app.popularmovies.Adapters.ReviewAdapter;
 import com.sudhirkhanger.app.popularmovies.Adapters.TrailerAdapter;
 import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchReviews;
 import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchTrailers;
@@ -50,11 +57,16 @@ import java.util.concurrent.ExecutionException;
 public class DetailFragment extends Fragment {
 
     private ContentResolver resolver;
+    private ArrayList<Trailer> mTrailerArrayList;
+    private static final String YT_SHARE = "YouTube Link - ";
+    private static final int FIRST_TRAILER_POS = 0;
+    private static final String YT_NO_SHARE = "Youtube link not found";
 
     static final String DETAILS_OBJECT = "movie_object";
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
     public DetailFragment() {
+        setHasOptionsMenu(true);
     }
 
     public static DetailFragment newInstance(Movie movie) {
@@ -104,7 +116,6 @@ public class DetailFragment extends Fragment {
             TextView detailOverview = (TextView) rootView.findViewById(R.id.details_overview);
             ImageView detailBackdrops = (ImageView) rootView.findViewById(R.id.details_backdrop);
             ImageView detailThumbnail = (ImageView) rootView.findViewById(R.id.details_thumbnail);
-//            final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
 
             detailTitle.setText(movie.getTitle());
             detailReleaseYear.setText(getYear((movie.getReleaseDate())));
@@ -141,21 +152,7 @@ public class DetailFragment extends Fragment {
             });
 
             trailerView(movie, rootView);
-
-            // Trailer print keys
-            ArrayList<Review> mReviewsArrayList = new ArrayList<>();
-            try {
-                mReviewsArrayList =
-                        new FetchReviews().execute(movie.getId()).get();
-            } catch (ExecutionException | InterruptedException ei) {
-                ei.printStackTrace();
-            }
-
-            if (mReviewsArrayList != null) {
-                for (Review review : mReviewsArrayList) {
-                    Log.d(LOG_TAG, review.toString());
-                }
-            }
+            reviewView(movie, rootView);
         }
         return rootView;
     }
@@ -227,7 +224,7 @@ public class DetailFragment extends Fragment {
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         trailerRecyclerView.setLayoutManager(layoutManager);
 
-        ArrayList<Trailer> mTrailerArrayList = new ArrayList<>();
+        mTrailerArrayList = new ArrayList<>();
 
         try {
             mTrailerArrayList =
@@ -237,5 +234,59 @@ public class DetailFragment extends Fragment {
         }
 
         trailerRecyclerView.setAdapter(new TrailerAdapter(view.getContext(), mTrailerArrayList));
+    }
+
+    private void reviewView(Movie movie, View view) {
+
+        RecyclerView reviewRecyclerView =
+                (RecyclerView) view.findViewById(R.id.review_recyclerview);
+        reviewRecyclerView.setHasFixedSize(true);
+
+        reviewRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        ArrayList<Review> mReviewArrayList = new ArrayList<>();
+
+        try {
+            mReviewArrayList =
+                    new FetchReviews().execute(movie.getId()).get();
+        } catch (ExecutionException | InterruptedException ei) {
+            ei.printStackTrace();
+        }
+
+        reviewRecyclerView.setAdapter(new ReviewAdapter(mReviewArrayList));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.menu_detail_fragment, menu);
+
+        // Retrieve the share menu item
+        MenuItem menuItem = menu.findItem(R.id.menu_yt_share);
+
+        // Get the provider and hold onto it to set/change the share intent.
+        ShareActionProvider mShareActionProvider =
+                (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+        // Attach an intent to this ShareActionProvider.  You can update this at any time,
+        // like when the user selects a new piece of data they might like to share.
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(createShareForecastIntent());
+        } else {
+            Log.d(LOG_TAG, "Share Action Provider is null?");
+        }
+    }
+
+    private Intent createShareForecastIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        if (mTrailerArrayList != null) {
+            shareIntent.putExtra(Intent.EXTRA_TEXT,
+                    YT_SHARE + mTrailerArrayList.get(FIRST_TRAILER_POS).getLink());
+        } else {
+            shareIntent.putExtra(Intent.EXTRA_TEXT, YT_NO_SHARE);
+        }
+        return shareIntent;
     }
 }

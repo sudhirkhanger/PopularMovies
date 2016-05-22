@@ -56,9 +56,10 @@ public class FetchReviews extends AsyncTask<String, Void, ArrayList<Review>> {
 
             String author = reviewsObject.getString(MDB_AUTHOR);
             String content = reviewsObject.getString(MDB_CONTENT);
-            String contentEscapeChar = JSONObject.quote(content);
+//            String contentEscapeChar = JSONObject.quote(content);
 
-            reviewsArrayList.add(new Review(author, contentEscapeChar));
+            reviewsArrayList.add(new Review(author, content));
+//            reviewsArrayList.add(new Review(author, contentEscapeChar));
         }
         return reviewsArrayList;
     }

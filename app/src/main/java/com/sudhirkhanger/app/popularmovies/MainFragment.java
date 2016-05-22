@@ -82,15 +82,12 @@ public class MainFragment extends Fragment {
 
         updateMovieList();
 
-//        mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
-
         mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
                 mMovieArrayList,
                 new MovieAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Movie movie) {
                         Log.d(LOG_TAG, "onItemClick " + movie.toString());
-//                        startDetailsActivity(movie);
                         initiateCallback(movie);
                     }
                 }));
