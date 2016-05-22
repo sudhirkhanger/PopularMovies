@@ -35,6 +35,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * Fetches trailer links from themoviedb.org
+ */
+
 public class FetchTrailers extends AsyncTask<String, Void, ArrayList<Trailer>> {
 
     private static final String LOG_TAG = FetchTrailers.class.getSimpleName();

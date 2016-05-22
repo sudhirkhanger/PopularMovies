@@ -31,6 +31,10 @@ import com.sudhirkhanger.app.popularmovies.R;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter for showing trailers
+ */
+
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
 
     private static final String LOG = Trailer.class.getSimpleName();

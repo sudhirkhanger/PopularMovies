@@ -35,6 +35,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * fetches reviews from themoviedb.org
+ */
+
 public class FetchReviews extends AsyncTask<String, Void, ArrayList<Review>> {
 
     private static final String LOG_TAG = FetchReviews.class.getSimpleName();
@@ -56,10 +60,8 @@ public class FetchReviews extends AsyncTask<String, Void, ArrayList<Review>> {
 
             String author = reviewsObject.getString(MDB_AUTHOR);
             String content = reviewsObject.getString(MDB_CONTENT);
-//            String contentEscapeChar = JSONObject.quote(content);
 
             reviewsArrayList.add(new Review(author, content));
-//            reviewsArrayList.add(new Review(author, contentEscapeChar));
         }
         return reviewsArrayList;
     }

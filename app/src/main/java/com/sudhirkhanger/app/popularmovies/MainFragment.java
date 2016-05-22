@@ -17,7 +17,6 @@
 package com.sudhirkhanger.app.popularmovies;
 
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -109,14 +108,12 @@ public class MainFragment extends Fragment {
         if (str.equals(URL_FAVORITE)) {
             Log.d(LOG_TAG, "onResume() getDataFromDB");
             getDataFromDB();
-//            mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
             mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
                     mMovieArrayList,
                     new MovieAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(Movie movie) {
                             Log.d(LOG_TAG, "onItemClick " + movie.toString());
-//                            startDetailsActivity(movie);
                             initiateCallback(movie);
                         }
                     }));
@@ -192,14 +189,12 @@ public class MainFragment extends Fragment {
         } else if (sortBy.equals(URL_FAVORITE)) {
             getDataFromDB();
         }
-//        mRecyclerView.setAdapter(new MovieAdapter(getActivity(), mMovieArrayList));
         mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
                 mMovieArrayList,
                 new MovieAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Movie movie) {
                         Log.d(LOG_TAG, "onItemClick " + movie.toString());
-//                        startDetailsActivity(movie);
                         initiateCallback(movie);
                     }
                 }));
@@ -237,12 +232,6 @@ public class MainFragment extends Fragment {
 
         if (cursor != null)
             cursor.close();
-    }
-
-    public void startDetailsActivity(Movie movie) {
-        Intent i = new Intent(getActivity(), DetailActivity.class);
-        i.putExtra(DetailFragment.DETAILS_OBJECT, movie);
-        startActivity(i);
     }
 
     public void initiateCallback(Movie movie) {

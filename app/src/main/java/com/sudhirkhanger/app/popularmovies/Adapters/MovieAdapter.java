@@ -31,6 +31,10 @@ import com.sudhirkhanger.app.popularmovies.R;
 
 import java.util.List;
 
+/**
+ * Adapter for movie titles.
+ */
+
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
     private List<Movie> mMovieList;

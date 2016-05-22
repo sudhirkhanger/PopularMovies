@@ -21,6 +21,10 @@ import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+/**
+ * Defines all constants to be used for sqlite
+ */
+
 public class MovieContract {
 
     // Name of the content provider

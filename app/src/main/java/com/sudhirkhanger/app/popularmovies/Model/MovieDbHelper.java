@@ -22,6 +22,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.sudhirkhanger.app.popularmovies.Model.MovieContract.MovieEntry;
 
+/**
+ * Movie info is stored in a single table
+ */
+
 public class MovieDbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;

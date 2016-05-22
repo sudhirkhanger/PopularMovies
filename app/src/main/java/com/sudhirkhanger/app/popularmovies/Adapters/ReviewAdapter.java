@@ -28,6 +28,10 @@ import com.sudhirkhanger.app.popularmovies.R;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter for showing reviews
+ */
+
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
     private static final String LOG = Trailer.class.getSimpleName();

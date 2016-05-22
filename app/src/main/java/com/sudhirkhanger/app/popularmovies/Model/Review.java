@@ -16,6 +16,12 @@
 
 package com.sudhirkhanger.app.popularmovies.Model;
 
+/**
+ * model for reviews.
+ * there are two concerned variables
+ * the review and its author
+ */
+
 public class Review {
     String mAuthor;
     String mContent;

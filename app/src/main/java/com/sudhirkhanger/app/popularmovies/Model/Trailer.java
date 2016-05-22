@@ -16,6 +16,12 @@
 
 package com.sudhirkhanger.app.popularmovies.Model;
 
+/**
+ * Saves link for trailer and
+ * a thumbnail to show the trailer
+ * button
+ */
+
 public class Trailer {
     String mImage;
     String mLink;
