@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package com.sudhirkhanger.app.popularmovies.Model;
+package com.sudhirkhanger.app.popularmovies.database;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -23,30 +27,82 @@ import android.os.Parcelable;
  * This class holds movie object which
  * contains various info about a movie.
  */
-
+@Entity(tableName = "movie")
 public class Movie implements Parcelable {
-    String mTitle;
-    String mReleaseDate;
-    String mPosterPath;
-    String mVoteAverage;
-    String mOverView;
-    String mBackdrops;
-    String mId;
 
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+
+    @ColumnInfo(name = "title")
+    private String mTitle;
+
+    @ColumnInfo(name = "release_date")
+    private String mReleaseDate;
+
+    @ColumnInfo(name = "poster_path")
+    private String mPosterPath;
+
+    @ColumnInfo(name = "vote_average")
+    private String mVoteAverage;
+
+    @ColumnInfo(name = "overview")
+    private String mOverView;
+
+    @ColumnInfo(name = "backdrops")
+    private String mBackdrops;
+
+    @ColumnInfo(name = "movie_id")
+    private String movieId;
+
+    @Ignore
     public Movie(String title,
                  String releaseDate,
                  String posterPath,
                  String voteAverage,
                  String overView,
                  String backdrops,
-                 String id) {
+                 String movieId) {
         mTitle = title;
         mReleaseDate = releaseDate;
         mPosterPath = posterPath;
         mVoteAverage = voteAverage;
         mOverView = overView;
         mBackdrops = backdrops;
-        mId = id;
+        this.movieId = movieId;
+    }
+
+    public Movie(int id,
+                 String title,
+                 String releaseDate,
+                 String posterPath,
+                 String voteAverage,
+                 String overView,
+                 String backdrops,
+                 String movieId) {
+        this.id = id;
+        mTitle = title;
+        mReleaseDate = releaseDate;
+        mPosterPath = posterPath;
+        mVoteAverage = voteAverage;
+        mOverView = overView;
+        mBackdrops = backdrops;
+        this.movieId = movieId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
     }
 
     public String getTitle() {
@@ -97,26 +153,23 @@ public class Movie implements Parcelable {
         mBackdrops = backdrops;
     }
 
-    public String getId() {
-        return mId;
-    }
-
-    public void setId(String id) {
-        mId = id;
+    public static Creator<Movie> getCREATOR() {
+        return CREATOR;
     }
 
     @Override
     public String toString() {
         return "Movie{" +
-                "mTitle='" + mTitle + '\'' +
+                "id=" + id +
+                ", mTitle='" + mTitle + '\'' +
                 ", mReleaseDate='" + mReleaseDate + '\'' +
                 ", mPosterPath='" + mPosterPath + '\'' +
                 ", mVoteAverage='" + mVoteAverage + '\'' +
                 ", mOverView='" + mOverView + '\'' +
-                ", mId='" + mId + '\'' +
+                ", mBackdrops='" + mBackdrops + '\'' +
+                ", movieId='" + movieId + '\'' +
                 '}';
     }
-
 
     @Override
     public int describeContents() {
@@ -125,23 +178,25 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
         dest.writeString(this.mTitle);
         dest.writeString(this.mReleaseDate);
         dest.writeString(this.mPosterPath);
         dest.writeString(this.mVoteAverage);
         dest.writeString(this.mOverView);
         dest.writeString(this.mBackdrops);
-        dest.writeString(this.mId);
+        dest.writeString(this.movieId);
     }
 
     protected Movie(Parcel in) {
+        this.id = in.readInt();
         this.mTitle = in.readString();
         this.mReleaseDate = in.readString();
         this.mPosterPath = in.readString();
         this.mVoteAverage = in.readString();
         this.mOverView = in.readString();
         this.mBackdrops = in.readString();
-        this.mId = in.readString();
+        this.movieId = in.readString();
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {

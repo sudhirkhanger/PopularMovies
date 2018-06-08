@@ -42,10 +42,11 @@ import com.sudhirkhanger.app.popularmovies.Adapters.ReviewAdapter;
 import com.sudhirkhanger.app.popularmovies.Adapters.TrailerAdapter;
 import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchReviews;
 import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchTrailers;
-import com.sudhirkhanger.app.popularmovies.Model.Movie;
 import com.sudhirkhanger.app.popularmovies.Model.MovieContract;
 import com.sudhirkhanger.app.popularmovies.Model.Review;
 import com.sudhirkhanger.app.popularmovies.Model.Trailer;
+import com.sudhirkhanger.app.popularmovies.database.Movie;
+import com.sudhirkhanger.app.popularmovies.database.PopularMoviesDatabase;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
@@ -65,6 +66,8 @@ public class DetailFragment extends Fragment {
     static final String DETAILS_OBJECT = "movie_object";
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
 
+    private PopularMoviesDatabase popularMoviesDatabase;
+
     public DetailFragment() {
         setHasOptionsMenu(true);
     }
@@ -82,6 +85,9 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
 
+        popularMoviesDatabase = PopularMoviesDatabase.getInstance(
+                getActivity().getApplicationContext());
+
         Movie movie = null;
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -93,10 +99,11 @@ public class DetailFragment extends Fragment {
         resolver = getActivity().getContentResolver();
 
         if (movie != null) {
+            final Movie mov = movie;
 
             final String title = movie.getTitle();
             getActivity().setTitle(title);
-            final String movie_id = movie.getId();
+            final String movie_id = movie.getMovieId();
             final String poster = movie.getPosterPath();
             final String backdrop = movie.getBackdrops();
             final String overview = movie.getOverView();
@@ -144,6 +151,7 @@ public class DetailFragment extends Fragment {
                         favoriteButton.setText(R.string.unfavorite_Button);
                     } else {
                         removeMovie(movie_id);
+                        removeMovieFromRoom(mov);
                         favoriteButton.setText(R.string.favorite_Button);
                     }
                 }
@@ -204,12 +212,19 @@ public class DetailFragment extends Fragment {
         values.put(MovieContract.MovieEntry.DATE, release_date);
 
         resolver.insert(MovieContract.MovieEntry.CONTENT_URI, values);
+
+        Movie movie = new Movie(title, release_date, poster, vote_average, overview, backdrop, movie_id);
+        popularMoviesDatabase.movieDao().insertMovie(movie);
     }
 
     private void removeMovie(String movie_id) {
         resolver.delete(MovieContract.MovieEntry.CONTENT_URI,
                 MovieContract.MovieEntry.MOVIE_ID + " = ?",
                 new String[]{movie_id});
+    }
+
+    private void removeMovieFromRoom(Movie movie) {
+        popularMoviesDatabase.movieDao().deleteMovie(movie);
     }
 
     private void trailerView(Movie movie, View view) {
@@ -226,7 +241,7 @@ public class DetailFragment extends Fragment {
 
         try {
             mTrailerArrayList =
-                    new FetchTrailers().execute(movie.getId()).get();
+                    new FetchTrailers().execute(movie.getMovieId()).get();
         } catch (ExecutionException | InterruptedException ei) {
             ei.printStackTrace();
         }
@@ -246,7 +261,7 @@ public class DetailFragment extends Fragment {
 
         try {
             mReviewArrayList =
-                    new FetchReviews().execute(movie.getId()).get();
+                    new FetchReviews().execute(movie.getMovieId()).get();
         } catch (ExecutionException | InterruptedException ei) {
             ei.printStackTrace();
         }

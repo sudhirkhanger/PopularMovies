@@ -34,10 +34,12 @@ import android.view.ViewGroup;
 
 import com.sudhirkhanger.app.popularmovies.Adapters.MovieAdapter;
 import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchMoviesTask;
-import com.sudhirkhanger.app.popularmovies.Model.Movie;
 import com.sudhirkhanger.app.popularmovies.Model.MovieContract;
+import com.sudhirkhanger.app.popularmovies.database.Movie;
+import com.sudhirkhanger.app.popularmovies.database.PopularMoviesDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MainFragment extends Fragment {
@@ -57,6 +59,8 @@ public class MainFragment extends Fragment {
     private static final String URL_FAVORITE = "favorite";
     private static final String PREF = "sort";
 
+    private PopularMoviesDatabase popularMoviesDatabase;
+
     public interface Callback {
         void onItemSeleted(Movie movie);
     }
@@ -70,6 +74,8 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
+
+        popularMoviesDatabase = PopularMoviesDatabase.getInstance(getActivity().getApplicationContext());
 
         mSettings = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mEditor = mSettings.edit();
@@ -107,7 +113,8 @@ public class MainFragment extends Fragment {
         String str = mSettings.getString(PREF, URL_POPULARITY);
         if (str.equals(URL_FAVORITE)) {
             Log.d(LOG_TAG, "onResume() getDataFromDB");
-            getDataFromDB();
+//            getDataFromDB();
+            getDataFromRoom();
             mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
                     mMovieArrayList,
                     new MovieAdapter.OnItemClickListener() {
@@ -187,7 +194,8 @@ public class MainFragment extends Fragment {
                 ei.printStackTrace();
             }
         } else if (sortBy.equals(URL_FAVORITE)) {
-            getDataFromDB();
+//            getDataFromDB();
+            getDataFromRoom();
         }
         mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
                 mMovieArrayList,
@@ -232,6 +240,13 @@ public class MainFragment extends Fragment {
 
         if (cursor != null)
             cursor.close();
+    }
+
+    private void getDataFromRoom() {
+        mMovieArrayList = new ArrayList<>();
+//        List<Movie> movieList = popularMoviesDatabase.movieDao().loadAllMovies();
+//        if (movieList != null)
+            mMovieArrayList.addAll(popularMoviesDatabase.movieDao().loadAllMovies());
     }
 
     public void initiateCallback(Movie movie) {

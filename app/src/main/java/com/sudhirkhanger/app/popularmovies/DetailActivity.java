@@ -22,7 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.sudhirkhanger.app.popularmovies.Model.Movie;
+import com.sudhirkhanger.app.popularmovies.database.Movie;
 
 /**
  * This activity hosts Details Fragment which

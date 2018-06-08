@@ -21,7 +21,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.sudhirkhanger.app.popularmovies.BuildConfig;
-import com.sudhirkhanger.app.popularmovies.Model.Movie;
+import com.sudhirkhanger.app.popularmovies.database.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
