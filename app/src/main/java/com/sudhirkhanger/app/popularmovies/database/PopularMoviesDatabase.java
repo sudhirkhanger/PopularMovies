@@ -20,7 +20,6 @@ public abstract class PopularMoviesDatabase extends RoomDatabase {
                 Log.e(TAG, "getInstance: creating database");
                 popularMoviesDatabase = Room.databaseBuilder(context.getApplicationContext(),
                         PopularMoviesDatabase.class, PopularMoviesDatabase.DATABASE_NAME)
-                        .allowMainThreadQueries()
                         .build();
             }
         }

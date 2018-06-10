@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onItemSeleted(Movie movie) {
+    public void onItemSelected(Movie movie) {
         if (mTwoPane) {
             DetailFragment detailFragment =
                     DetailFragment.newInstance(movie);

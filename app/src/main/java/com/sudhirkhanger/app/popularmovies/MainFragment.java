@@ -16,11 +16,12 @@
 
 package com.sudhirkhanger.app.popularmovies;
 
-import android.content.ContentResolver;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +35,6 @@ import android.view.ViewGroup;
 
 import com.sudhirkhanger.app.popularmovies.Adapters.MovieAdapter;
 import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchMoviesTask;
-import com.sudhirkhanger.app.popularmovies.Model.MovieContract;
 import com.sudhirkhanger.app.popularmovies.database.Movie;
 import com.sudhirkhanger.app.popularmovies.database.PopularMoviesDatabase;
 
@@ -44,7 +44,8 @@ import java.util.concurrent.ExecutionException;
 
 public class MainFragment extends Fragment {
 
-    private ArrayList<Movie> mMovieArrayList = new ArrayList<Movie>();
+    private ArrayList<Movie> mMovieArrayList = new ArrayList<>();
+    private ArrayList<Movie> favoriteMovieArrayList = new ArrayList<>();
     private static final String PAGE = "1";
     private static final int GRID = 2;
     private RecyclerView mRecyclerView;
@@ -52,7 +53,7 @@ public class MainFragment extends Fragment {
     private SharedPreferences mSettings;
     private SharedPreferences.Editor mEditor;
 
-    private static final String LOG_TAG = MainFragment.class.getSimpleName();
+    private static final String TAG = MainFragment.class.getSimpleName();
 
     private static final String URL_POPULARITY = "popular";
     private static final String URL_RATING = "top_rated";
@@ -62,7 +63,7 @@ public class MainFragment extends Fragment {
     private PopularMoviesDatabase popularMoviesDatabase;
 
     public interface Callback {
-        void onItemSeleted(Movie movie);
+        void onItemSelected(Movie movie);
     }
 
 
@@ -86,13 +87,14 @@ public class MainFragment extends Fragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), GRID));
 
         updateMovieList();
+        getDataFromRoom();
 
         mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
                 mMovieArrayList,
                 new MovieAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Movie movie) {
-                        Log.d(LOG_TAG, "onItemClick " + movie.toString());
+                        Log.d(TAG, "onItemClick " + movie.toString());
                         initiateCallback(movie);
                     }
                 }));
@@ -106,27 +108,27 @@ public class MainFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(LOG_TAG, "onResume() reached");
-        String str = mSettings.getString(PREF, URL_POPULARITY);
-        if (str.equals(URL_FAVORITE)) {
-            Log.d(LOG_TAG, "onResume() getDataFromDB");
-//            getDataFromDB();
-            getDataFromRoom();
-            mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
-                    mMovieArrayList,
-                    new MovieAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(Movie movie) {
-                            Log.d(LOG_TAG, "onItemClick " + movie.toString());
-                            initiateCallback(movie);
-                        }
-                    }));
-            mRecyclerView.getAdapter().notifyDataSetChanged();
-        }
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        String pref = mSettings.getString(PREF, URL_POPULARITY);
+//        Log.d(TAG, "onResume(): " + pref);
+//        if (pref.equals(URL_FAVORITE)) {
+//            Log.d(TAG, "onResume() getDataFromDB");
+//////            getDataFromDB();
+////            getDataFromRoom();
+////            mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
+////                    mMovieArrayList,
+////                    new MovieAdapter.OnItemClickListener() {
+////                        @Override
+////                        public void onItemClick(Movie movie) {
+////                            Log.d(TAG, "onItemClick " + movie.toString());
+////                            initiateCallback(movie);
+////                        }
+////                    }));
+////            mRecyclerView.getAdapter().notifyDataSetChanged();
+//        }
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -141,21 +143,21 @@ public class MainFragment extends Fragment {
                 mEditor.apply();
                 updateMovieList();
                 item.setChecked(true);
-                Log.d(LOG_TAG, "onOptionsItemSelected: popularity");
+                Log.e(TAG, "onOptionsItemSelected: popularity");
                 return true;
             case R.id.rating:
                 mEditor.putString(PREF, URL_RATING);
                 mEditor.apply();
                 updateMovieList();
                 item.setChecked(true);
-                Log.d(LOG_TAG, "onOptionsItemSelected: rating");
+                Log.e(TAG, "onOptionsItemSelected: rating");
                 return true;
             case R.id.favorite:
                 mEditor.putString(PREF, URL_FAVORITE);
                 mEditor.apply();
                 updateMovieList();
                 item.setChecked(true);
-                Log.d(LOG_TAG, "onOptionsItemSelected: favorite");
+                Log.e(TAG, "onOptionsItemSelected: favorite");
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -194,62 +196,40 @@ public class MainFragment extends Fragment {
                 ei.printStackTrace();
             }
         } else if (sortBy.equals(URL_FAVORITE)) {
-//            getDataFromDB();
-            getDataFromRoom();
+            mMovieArrayList = favoriteMovieArrayList;
         }
         mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
                 mMovieArrayList,
                 new MovieAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(Movie movie) {
-                        Log.d(LOG_TAG, "onItemClick " + movie.toString());
+                        Log.d(TAG, "onItemClick " + movie.toString());
                         initiateCallback(movie);
                     }
                 }));
         mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
-    //TODO: replace null with column constants
-    private void getDataFromDB() {
-        mMovieArrayList = new ArrayList<>();
-        ContentResolver resolver = getActivity().getContentResolver();
-        Cursor cursor =
-                resolver.query(MovieContract.MovieEntry.CONTENT_URI,
-                        null,
-                        null,
-                        null,
-                        null);
-
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                do {
-                    String title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.TITLE));
-                    String movie_id = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID));
-                    String poster = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.POSTER));
-                    String backdrop = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.BACKDROP));
-                    String overview = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.OVERVIEW));
-                    String vote_average = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.VOTE_AVERAGE));
-                    String release_date = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.DATE));
-
-                    Movie movie = new Movie(title, release_date, poster,
-                            vote_average, overview, backdrop, movie_id);
-                    mMovieArrayList.add(movie);
-                } while (cursor.moveToNext());
+    private void getDataFromRoom() {
+        Log.e(TAG, "getDataFromRoom: ");
+        final LiveData<List<Movie>> movieList = popularMoviesDatabase.movieDao().loadAllMovies();
+        movieList.observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                printMovieList(movies);
+                favoriteMovieArrayList.addAll(movies);
             }
-        }
-
-        if (cursor != null)
-            cursor.close();
+        });
     }
 
-    private void getDataFromRoom() {
-        mMovieArrayList = new ArrayList<>();
-//        List<Movie> movieList = popularMoviesDatabase.movieDao().loadAllMovies();
-//        if (movieList != null)
-            mMovieArrayList.addAll(popularMoviesDatabase.movieDao().loadAllMovies());
+    private void printMovieList(@Nullable List<Movie> movies) {
+        if (movies != null) {
+            for (int i = 0; i < movies.size(); i++)
+                Log.e("value is", movies.get(i).toString());
+        }
     }
 
     public void initiateCallback(Movie movie) {
-        ((Callback) getActivity()).onItemSeleted(movie);
+        ((Callback) getActivity()).onItemSelected(movie);
     }
 }

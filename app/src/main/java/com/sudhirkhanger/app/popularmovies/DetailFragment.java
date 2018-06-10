@@ -16,11 +16,11 @@
 
 package com.sudhirkhanger.app.popularmovies;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,14 +42,15 @@ import com.sudhirkhanger.app.popularmovies.Adapters.ReviewAdapter;
 import com.sudhirkhanger.app.popularmovies.Adapters.TrailerAdapter;
 import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchReviews;
 import com.sudhirkhanger.app.popularmovies.FetchTasks.FetchTrailers;
-import com.sudhirkhanger.app.popularmovies.Model.MovieContract;
 import com.sudhirkhanger.app.popularmovies.Model.Review;
 import com.sudhirkhanger.app.popularmovies.Model.Trailer;
 import com.sudhirkhanger.app.popularmovies.database.Movie;
 import com.sudhirkhanger.app.popularmovies.database.PopularMoviesDatabase;
+import com.sudhirkhanger.app.popularmovies.utilities.AppExecutors;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -57,14 +58,14 @@ import java.util.concurrent.ExecutionException;
  */
 public class DetailFragment extends Fragment {
 
-    private ContentResolver resolver;
+    private ArrayList<Movie> favoriteMovieArrayList = new ArrayList<>();
     private ArrayList<Trailer> mTrailerArrayList;
     private static final String YT_SHARE = "YouTube Link - ";
     private static final int FIRST_TRAILER_POS = 0;
     private static final String YT_NO_SHARE = "Youtube link not found";
 
     static final String DETAILS_OBJECT = "movie_object";
-    private static final String LOG_TAG = DetailFragment.class.getSimpleName();
+    private static final String TAG = DetailFragment.class.getSimpleName();
 
     private PopularMoviesDatabase popularMoviesDatabase;
 
@@ -87,6 +88,7 @@ public class DetailFragment extends Fragment {
 
         popularMoviesDatabase = PopularMoviesDatabase.getInstance(
                 getActivity().getApplicationContext());
+        getDataFromRoom();
 
         Movie movie = null;
         Bundle bundle = getArguments();
@@ -96,10 +98,37 @@ public class DetailFragment extends Fragment {
             movie = savedInstanceState.getParcelable(DETAILS_OBJECT);
         }
 
-        resolver = getActivity().getContentResolver();
+        final Movie movieFinal = movie;
+
+        final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
+
+        LiveData<Movie> movieLiveData = popularMoviesDatabase.movieDao().getMovieByMovieId(movie.getMovieId());
+        movieLiveData.observe(getActivity(), new Observer<Movie>() {
+            @Override
+            public void onChanged(@Nullable Movie movie) {
+                if (movie == null) {
+                    Log.e(TAG, "onChanged: movie not found in the database");
+                    favoriteButton.setText("Not in db. Save");
+                } else {
+                    Log.e(TAG, "onChanged: movie found in the database");
+                    favoriteButton.setText("In db. Remove");
+                }
+            }
+        });
+
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (favoriteButton.getText().toString().equals("Not in db. Save")) {
+                    Log.e(TAG, "onClick: Not in db. Save addmovie");
+                    addMovieToRoom(movieFinal);
+                } else if (favoriteButton.getText().toString().equals("In db. Remove")) {
+                    Log.e(TAG, "onClick: In db. Remove removeMovie");
+                    removeMovieFromRoom(movieFinal);
+                }
+            }
+        });
 
         if (movie != null) {
-            final Movie mov = movie;
 
             final String title = movie.getTitle();
             getActivity().setTitle(title);
@@ -120,7 +149,6 @@ public class DetailFragment extends Fragment {
             TextView detailOverview = (TextView) rootView.findViewById(R.id.details_overview);
             ImageView detailBackdrops = (ImageView) rootView.findViewById(R.id.details_backdrop);
             ImageView detailThumbnail = (ImageView) rootView.findViewById(R.id.details_thumbnail);
-            final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
 
             detailTitle.setText(movie.getTitle());
             detailReleaseYear.setText(getYear((movie.getReleaseDate())));
@@ -133,29 +161,6 @@ public class DetailFragment extends Fragment {
             Picasso.with(rootView.getContext())
                     .load(movie.getPosterPath())
                     .into(detailThumbnail);
-
-            if (isRowExist(movie_id)) {
-                favoriteButton.setText(R.string.unfavorite_Button);
-            }
-
-            favoriteButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    if (!isRowExist(movie_id)) {
-                        addMovie(title,
-                                movie_id,
-                                poster,
-                                backdrop,
-                                overview,
-                                vote_average,
-                                release_date);
-                        favoriteButton.setText(R.string.unfavorite_Button);
-                    } else {
-                        removeMovie(movie_id);
-                        removeMovieFromRoom(mov);
-                        favoriteButton.setText(R.string.favorite_Button);
-                    }
-                }
-            });
 
             trailerView(movie, rootView);
             reviewView(movie, rootView);
@@ -173,58 +178,43 @@ public class DetailFragment extends Fragment {
         return new DateFormatSymbols().getMonths()[num - 1];
     }
 
-    private boolean isRowExist(String movieId) {
-        Cursor cursor = resolver.query(
-                MovieContract.MovieEntry.CONTENT_URI,
-                null,
-                MovieContract.MovieEntry.MOVIE_ID + " = ?",
-                new String[]{movieId},
-                null
-        );
+    private void getDataFromRoom() {
+        Log.e(TAG, "getDataFromRoom: ");
+        final LiveData<List<Movie>> movieList = popularMoviesDatabase.movieDao().loadAllMovies();
+        movieList.observe(getActivity(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                printMovieList(movies);
+                favoriteMovieArrayList.addAll(movies);
+            }
+        });
+    }
 
-        if (cursor != null && cursor.getCount() <= 0) {
-            Log.d(LOG_TAG, "isRowExist: doesn't exist " + cursor.getCount());
-            cursor.close();
-            return false;
-        } else {
-            Log.d(LOG_TAG, "isRowExist: exists " + cursor.getCount());
-            cursor.close();
-            return true;
+    private void printMovieList(@Nullable List<Movie> movies) {
+        if (movies != null) {
+            for (int i = 0; i < movies.size(); i++)
+                Log.e("value is", movies.get(i).toString());
         }
     }
 
-    private void addMovie(String title,
-                          String movie_id,
-                          String poster,
-                          String backdrop,
-                          String overview,
-                          String vote_average,
-                          String release_date) {
-
-        ContentValues values = new ContentValues();
-
-        values.put(MovieContract.MovieEntry.TITLE, title);
-        values.put(MovieContract.MovieEntry.MOVIE_ID, movie_id);
-        values.put(MovieContract.MovieEntry.POSTER, poster);
-        values.put(MovieContract.MovieEntry.BACKDROP, backdrop);
-        values.put(MovieContract.MovieEntry.OVERVIEW, overview);
-        values.put(MovieContract.MovieEntry.VOTE_AVERAGE, vote_average);
-        values.put(MovieContract.MovieEntry.DATE, release_date);
-
-        resolver.insert(MovieContract.MovieEntry.CONTENT_URI, values);
-
-        Movie movie = new Movie(title, release_date, poster, vote_average, overview, backdrop, movie_id);
-        popularMoviesDatabase.movieDao().insertMovie(movie);
+    private void addMovieToRoom(final Movie movie) {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "addMovieToRoom " + movie.getTitle());
+                popularMoviesDatabase.movieDao().insertMovie(movie);
+            }
+        });
     }
 
-    private void removeMovie(String movie_id) {
-        resolver.delete(MovieContract.MovieEntry.CONTENT_URI,
-                MovieContract.MovieEntry.MOVIE_ID + " = ?",
-                new String[]{movie_id});
-    }
-
-    private void removeMovieFromRoom(Movie movie) {
-        popularMoviesDatabase.movieDao().deleteMovie(movie);
+    private void removeMovieFromRoom(final Movie movie) {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.e(TAG, "removeMovieFromRoom " + movie.getTitle());
+                popularMoviesDatabase.movieDao().deleteMovie(movie);
+            }
+        });
     }
 
     private void trailerView(Movie movie, View view) {
@@ -286,7 +276,7 @@ public class DetailFragment extends Fragment {
         if (mShareActionProvider != null) {
             mShareActionProvider.setShareIntent(createShareForecastIntent());
         } else {
-            Log.d(LOG_TAG, "Share Action Provider is null?");
+            Log.d(TAG, "Share Action Provider is null?");
         }
     }
 
