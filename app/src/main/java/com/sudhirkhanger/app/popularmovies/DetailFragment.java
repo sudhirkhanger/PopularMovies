@@ -86,9 +86,17 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_details, container, false);
 
+        final TextView detailTitle = (TextView) rootView.findViewById(R.id.details_title);
+        final TextView detailReleaseYear = (TextView) rootView.findViewById(R.id.details_release_year);
+        final TextView detailReleaseMonth = (TextView) rootView.findViewById(R.id.details_release_month);
+        final TextView detailVoteAverage = (TextView) rootView.findViewById(R.id.details_vote_average);
+        final TextView detailOverview = (TextView) rootView.findViewById(R.id.details_overview);
+        final ImageView detailBackdrops = (ImageView) rootView.findViewById(R.id.details_backdrop);
+        final ImageView detailThumbnail = (ImageView) rootView.findViewById(R.id.details_thumbnail);
+        final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
+
         popularMoviesDatabase = PopularMoviesDatabase.getInstance(
                 getActivity().getApplicationContext());
-        getDataFromRoom();
 
         Movie movie = null;
         Bundle bundle = getArguments();
@@ -97,20 +105,31 @@ public class DetailFragment extends Fragment {
         } else if (savedInstanceState != null) {
             movie = savedInstanceState.getParcelable(DETAILS_OBJECT);
         }
+        logMovie(movie, "onCreateView");
 
         final Movie movieFinal = movie;
+        final String movieId = movie.getMovieId();
 
-        final Button favoriteButton = (Button) rootView.findViewById(R.id.favorite_button);
+        final LiveData<List<Movie>> movieListLiveData =
+                popularMoviesDatabase.movieDao().loadAllMovies();
+        movieListLiveData.observe(getActivity(), new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movies) {
+                printMovieList(movies);
+                favoriteMovieArrayList.addAll(movies);
+            }
+        });
 
-        LiveData<Movie> movieLiveData = popularMoviesDatabase.movieDao().getMovieByMovieId(movie.getMovieId());
+        LiveData<Movie> movieLiveData =
+                popularMoviesDatabase.movieDao().getMovieByMovieId(movieId);
         movieLiveData.observe(getActivity(), new Observer<Movie>() {
             @Override
             public void onChanged(@Nullable Movie movie) {
                 if (movie == null) {
-                    Log.e(TAG, "onChanged: movie not found in the database");
+                    logMovie(movieFinal, "Movie not found in the database ");
                     favoriteButton.setText("Not in db. Save");
                 } else {
-                    Log.e(TAG, "onChanged: movie found in the database");
+                    logMovie(movieFinal, "Movie found in the database");
                     favoriteButton.setText("In db. Remove");
                 }
             }
@@ -119,52 +138,36 @@ public class DetailFragment extends Fragment {
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (favoriteButton.getText().toString().equals("Not in db. Save")) {
-                    Log.e(TAG, "onClick: Not in db. Save addmovie");
+                    logMovie(movieFinal, "onClick: Not in db. Save addmovie");
                     addMovieToRoom(movieFinal);
                 } else if (favoriteButton.getText().toString().equals("In db. Remove")) {
-                    Log.e(TAG, "onClick: In db. Remove removeMovie");
+                    logMovie(movieFinal, "onClick: In db. Remove removeMovie");
                     removeMovieFromRoom(movieFinal);
                 }
             }
         });
 
-        if (movie != null) {
+        final String title = movie.getTitle();
+        getActivity().setTitle(title);
 
-            final String title = movie.getTitle();
-            getActivity().setTitle(title);
-            final String movie_id = movie.getMovieId();
-            final String poster = movie.getPosterPath();
-            final String backdrop = movie.getBackdrops();
-            final String overview = movie.getOverView();
-            final String vote_average = movie.getVoteAverage();
-            final String release_date = movie.getReleaseDate();
+        final View view = rootView.findViewById(R.id.details_layout);
+        view.setVisibility(View.VISIBLE);
 
-            final View view = rootView.findViewById(R.id.details_layout);
-            view.setVisibility(View.VISIBLE);
+        detailTitle.setText(movie.getTitle());
+        detailReleaseYear.setText(getYear((movie.getReleaseDate())));
+        detailReleaseMonth.setText(getMonth(movie.getReleaseDate()));
+        detailVoteAverage.setText(movie.getVoteAverage() + "/10");
+        detailOverview.setText(movie.getOverView());
+        Picasso.with(rootView.getContext())
+                .load(movie.getBackdrops())
+                .into(detailBackdrops);
+        Picasso.with(rootView.getContext())
+                .load(movie.getPosterPath())
+                .into(detailThumbnail);
 
-            TextView detailTitle = (TextView) rootView.findViewById(R.id.details_title);
-            TextView detailReleaseYear = (TextView) rootView.findViewById(R.id.details_release_year);
-            TextView detailReleaseMonth = (TextView) rootView.findViewById(R.id.details_release_month);
-            TextView detailVoteAverage = (TextView) rootView.findViewById(R.id.details_vote_average);
-            TextView detailOverview = (TextView) rootView.findViewById(R.id.details_overview);
-            ImageView detailBackdrops = (ImageView) rootView.findViewById(R.id.details_backdrop);
-            ImageView detailThumbnail = (ImageView) rootView.findViewById(R.id.details_thumbnail);
+        trailerView(movie, rootView);
+        reviewView(movie, rootView);
 
-            detailTitle.setText(movie.getTitle());
-            detailReleaseYear.setText(getYear((movie.getReleaseDate())));
-            detailReleaseMonth.setText(getMonth(movie.getReleaseDate()));
-            detailVoteAverage.setText(movie.getVoteAverage() + "/10");
-            detailOverview.setText(movie.getOverView());
-            Picasso.with(rootView.getContext())
-                    .load(movie.getBackdrops())
-                    .into(detailBackdrops);
-            Picasso.with(rootView.getContext())
-                    .load(movie.getPosterPath())
-                    .into(detailThumbnail);
-
-            trailerView(movie, rootView);
-            reviewView(movie, rootView);
-        }
         return rootView;
     }
 
@@ -178,30 +181,11 @@ public class DetailFragment extends Fragment {
         return new DateFormatSymbols().getMonths()[num - 1];
     }
 
-    private void getDataFromRoom() {
-        Log.e(TAG, "getDataFromRoom: ");
-        final LiveData<List<Movie>> movieList = popularMoviesDatabase.movieDao().loadAllMovies();
-        movieList.observe(getActivity(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                printMovieList(movies);
-                favoriteMovieArrayList.addAll(movies);
-            }
-        });
-    }
-
-    private void printMovieList(@Nullable List<Movie> movies) {
-        if (movies != null) {
-            for (int i = 0; i < movies.size(); i++)
-                Log.e("value is", movies.get(i).toString());
-        }
-    }
-
     private void addMovieToRoom(final Movie movie) {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                Log.e(TAG, "addMovieToRoom " + movie.getTitle());
+                logMovie(movie, "addMovieToRoom");
                 popularMoviesDatabase.movieDao().insertMovie(movie);
             }
         });
@@ -211,22 +195,19 @@ public class DetailFragment extends Fragment {
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                Log.e(TAG, "removeMovieFromRoom " + movie.getTitle());
+                logMovie(movie, "removeMovieFromRoom");
                 popularMoviesDatabase.movieDao().deleteMovie(movie);
             }
         });
     }
 
     private void trailerView(Movie movie, View view) {
-
         RecyclerView trailerRecyclerView =
                 (RecyclerView) view.findViewById(R.id.trailer_recyclerview);
         trailerRecyclerView.setHasFixedSize(true);
-
         RecyclerView.LayoutManager layoutManager =
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         trailerRecyclerView.setLayoutManager(layoutManager);
-
         mTrailerArrayList = new ArrayList<>();
 
         try {
@@ -240,13 +221,10 @@ public class DetailFragment extends Fragment {
     }
 
     private void reviewView(Movie movie, View view) {
-
         RecyclerView reviewRecyclerView =
                 (RecyclerView) view.findViewById(R.id.review_recyclerview);
         reviewRecyclerView.setHasFixedSize(true);
-
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         ArrayList<Review> mReviewArrayList = new ArrayList<>();
 
         try {
@@ -291,5 +269,16 @@ public class DetailFragment extends Fragment {
             shareIntent.putExtra(Intent.EXTRA_TEXT, YT_NO_SHARE);
         }
         return shareIntent;
+    }
+
+    private void printMovieList(@Nullable List<Movie> movies) {
+        if (movies != null) {
+            for (int i = 0; i < movies.size(); i++)
+                logMovie(movies.get(i), "printMovieList");
+        }
+    }
+
+    private void logMovie(Movie movie, String message) {
+        Log.e(TAG, message + " " + movie.getMovieId() + " " + movie.getTitle());
     }
 }

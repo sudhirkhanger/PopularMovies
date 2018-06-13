@@ -19,6 +19,10 @@ android {
         it.buildConfigField 'String', 'THE_MOVIE_DB_API_KEY', MyTheMovieDBApiKey
     }
     sourceSets { main { java.srcDirs = ['src/main/java', 'src/main/java/2'] } }
+//        compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
 }
 
 dependencies {
@@ -36,4 +40,6 @@ dependencies {
 
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
+
+    implementation 'com.facebook.stetho:stetho:1.5.0'
 }

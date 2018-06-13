@@ -1,10 +1,10 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".DetailFragment"
-            tools:showIn="@layout/activity_details">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailFragment"
+    tools:showIn="@layout/activity_details">
 
     <LinearLayout
         android:id="@+id/details_layout"
@@ -35,7 +35,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:alpha="0.5"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                         android:id="@+id/details_thumbnail"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -61,32 +61,32 @@
                             style="@style/CarviewLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:maxLines="2"/>
+                            android:maxLines="2" />
 
                         <TextView
                             android:id="@+id/details_release_year"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="@dimen/year_size"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/details_release_month"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/info_secondary"/>
+                            android:textSize="@dimen/info_secondary" />
 
                         <TextView
                             android:id="@+id/details_vote_average"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/info_secondary"/>
+                            android:textSize="@dimen/info_secondary" />
 
                         <Button
                             android:id="@+id/favorite_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/favorite_Button"/>
+                            android:text="@string/favorite_Button" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -113,13 +113,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/overview"/>
+                    android:text="@string/overview" />
 
                 <TextView
                     android:id="@+id/details_overview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="4dp"/>
+                    android:paddingTop="4dp" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
@@ -142,20 +142,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/trailer"/>
+                    android:text="@string/trailer" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/trailer_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="4dp"
-                    android:scrollbars="horizontal"/>
+                    android:scrollbars="horizontal" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/review_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>

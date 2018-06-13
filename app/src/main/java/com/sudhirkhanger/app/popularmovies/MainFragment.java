@@ -66,7 +66,6 @@ public class MainFragment extends Fragment {
         void onItemSelected(Movie movie);
     }
 
-
     public MainFragment() {
     }
 
@@ -107,28 +106,6 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
-
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        String pref = mSettings.getString(PREF, URL_POPULARITY);
-//        Log.d(TAG, "onResume(): " + pref);
-//        if (pref.equals(URL_FAVORITE)) {
-//            Log.d(TAG, "onResume() getDataFromDB");
-//////            getDataFromDB();
-////            getDataFromRoom();
-////            mRecyclerView.setAdapter(new MovieAdapter(getActivity(),
-////                    mMovieArrayList,
-////                    new MovieAdapter.OnItemClickListener() {
-////                        @Override
-////                        public void onItemClick(Movie movie) {
-////                            Log.d(TAG, "onItemClick " + movie.toString());
-////                            initiateCallback(movie);
-////                        }
-////                    }));
-////            mRecyclerView.getAdapter().notifyDataSetChanged();
-//        }
-//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
