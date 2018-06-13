@@ -16,13 +16,13 @@ public interface MovieDao {
     @Query("SELECT * FROM movie")
     LiveData<List<Movie>> loadAllMovies();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     void insertMovie(Movie movie);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateMovie(Movie movie);
 
-    @Delete
+    @Delete()
     void deleteMovie(Movie movie);
 
     @Query("SELECT * FROM movie WHERE movie_id = :movieId")
