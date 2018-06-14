@@ -142,7 +142,7 @@ public class DetailFragment extends Fragment {
                     addMovieToRoom(movieFinal);
                 } else if (favoriteButton.getText().toString().equals("In db. Remove")) {
                     logMovie(movieFinal, "onClick: In db. Remove removeMovie");
-                    removeMovieFromRoom(movieFinal);
+                    removeMovieFromRoomByMovieId(movieId);
                 }
             }
         });
@@ -197,6 +197,15 @@ public class DetailFragment extends Fragment {
             public void run() {
                 logMovie(movie, "removeMovieFromRoom");
                 popularMoviesDatabase.movieDao().deleteMovie(movie);
+            }
+        });
+    }
+
+    private void removeMovieFromRoomByMovieId(final String movieId) {
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                popularMoviesDatabase.movieDao().deleteByMovieId(movieId);
             }
         });
     }

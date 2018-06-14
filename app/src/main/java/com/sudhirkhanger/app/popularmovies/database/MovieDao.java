@@ -25,6 +25,9 @@ public interface MovieDao {
     @Delete()
     void deleteMovie(Movie movie);
 
+    @Query("delete from movie where movie_id = :movieId")
+    void deleteByMovieId(String movieId);
+
     @Query("SELECT * FROM movie WHERE movie_id = :movieId")
     LiveData<Movie> getMovieByMovieId(String movieId);
 }

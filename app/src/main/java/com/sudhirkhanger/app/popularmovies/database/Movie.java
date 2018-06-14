@@ -18,10 +18,10 @@ package com.sudhirkhanger.app.popularmovies.database;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 /**
  * This class holds movie object which
@@ -29,9 +29,6 @@ import android.os.Parcelable;
  */
 @Entity(tableName = "movie")
 public class Movie implements Parcelable {
-
-    @PrimaryKey(autoGenerate = true)
-    private int id;
 
     @ColumnInfo(name = "title")
     private String mTitle;
@@ -51,17 +48,18 @@ public class Movie implements Parcelable {
     @ColumnInfo(name = "backdrops")
     private String mBackdrops;
 
+    @NonNull
+    @PrimaryKey
     @ColumnInfo(name = "movie_id")
     private String movieId;
 
-    @Ignore
     public Movie(String title,
                  String releaseDate,
                  String posterPath,
                  String voteAverage,
                  String overView,
                  String backdrops,
-                 String movieId) {
+                 @NonNull String movieId) {
         mTitle = title;
         mReleaseDate = releaseDate;
         mPosterPath = posterPath;
@@ -69,32 +67,6 @@ public class Movie implements Parcelable {
         mOverView = overView;
         mBackdrops = backdrops;
         this.movieId = movieId;
-    }
-
-    public Movie(int id,
-                 String title,
-                 String releaseDate,
-                 String posterPath,
-                 String voteAverage,
-                 String overView,
-                 String backdrops,
-                 String movieId) {
-        this.id = id;
-        mTitle = title;
-        mReleaseDate = releaseDate;
-        mPosterPath = posterPath;
-        mVoteAverage = voteAverage;
-        mOverView = overView;
-        mBackdrops = backdrops;
-        this.movieId = movieId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getMovieId() {
@@ -160,8 +132,7 @@ public class Movie implements Parcelable {
     @Override
     public String toString() {
         return "Movie{" +
-                "id=" + id +
-                ", mTitle='" + mTitle + '\'' +
+                "mTitle='" + mTitle + '\'' +
                 ", mReleaseDate='" + mReleaseDate + '\'' +
                 ", mPosterPath='" + mPosterPath + '\'' +
                 ", mVoteAverage='" + mVoteAverage + '\'' +
@@ -178,7 +149,6 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
         dest.writeString(this.mTitle);
         dest.writeString(this.mReleaseDate);
         dest.writeString(this.mPosterPath);
@@ -189,7 +159,6 @@ public class Movie implements Parcelable {
     }
 
     protected Movie(Parcel in) {
-        this.id = in.readInt();
         this.mTitle = in.readString();
         this.mReleaseDate = in.readString();
         this.mPosterPath = in.readString();
