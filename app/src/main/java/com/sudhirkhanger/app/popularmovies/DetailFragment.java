@@ -16,8 +16,8 @@
 
 package com.sudhirkhanger.app.popularmovies;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -110,39 +110,30 @@ public class DetailFragment extends Fragment {
         final Movie movieFinal = movie;
         final String movieId = movie.getMovieId();
 
-        final LiveData<List<Movie>> movieListLiveData =
-                popularMoviesDatabase.movieDao().loadAllMovies();
-        movieListLiveData.observe(getActivity(), new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movies) {
-                printMovieList(movies);
-                favoriteMovieArrayList.addAll(movies);
-            }
-        });
-
-        LiveData<Movie> movieLiveData =
-                popularMoviesDatabase.movieDao().getMovieByMovieId(movieId);
-        movieLiveData.observe(getActivity(), new Observer<Movie>() {
+        DetailViewModelFactory factory = new DetailViewModelFactory(popularMoviesDatabase, movieId);
+        final DetailViewModel viewModel =
+                ViewModelProviders.of(getActivity(), factory).get(DetailViewModel.class);
+        viewModel.getMovieLiveData().observe(getActivity(), new Observer<Movie>() {
             @Override
             public void onChanged(@Nullable Movie movie) {
                 if (movie == null) {
                     logMovie(movieFinal, "Movie not found in the database ");
-                    favoriteButton.setText("Not in db. Save");
+                    favoriteButton.setText(getString(R.string.favorite));
                 } else {
                     logMovie(movieFinal, "Movie found in the database");
-                    favoriteButton.setText("In db. Remove");
+                    favoriteButton.setText(getString(R.string.unfavorite_Button));
                 }
             }
         });
 
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (favoriteButton.getText().toString().equals("Not in db. Save")) {
+                if (favoriteButton.getText().toString().equals(getString(R.string.favorite))) {
                     logMovie(movieFinal, "onClick: Not in db. Save addmovie");
                     addMovieToRoom(movieFinal);
-                } else if (favoriteButton.getText().toString().equals("In db. Remove")) {
+                } else if (favoriteButton.getText().toString().equals(getString(R.string.unfavorite_Button))) {
                     logMovie(movieFinal, "onClick: In db. Remove removeMovie");
-                    removeMovieFromRoomByMovieId(movieId);
+                    removeMovieFromRoom(movieFinal);
                 }
             }
         });
@@ -197,15 +188,6 @@ public class DetailFragment extends Fragment {
             public void run() {
                 logMovie(movie, "removeMovieFromRoom");
                 popularMoviesDatabase.movieDao().deleteMovie(movie);
-            }
-        });
-    }
-
-    private void removeMovieFromRoomByMovieId(final String movieId) {
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                popularMoviesDatabase.movieDao().deleteByMovieId(movieId);
             }
         });
     }

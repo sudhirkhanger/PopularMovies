@@ -16,8 +16,8 @@
 
 package com.sudhirkhanger.app.popularmovies;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -188,9 +188,10 @@ public class MainFragment extends Fragment {
     }
 
     private void getDataFromRoom() {
-        Log.e(TAG, "getDataFromRoom: ");
-        final LiveData<List<Movie>> movieList = popularMoviesDatabase.movieDao().loadAllMovies();
-        movieList.observe(this, new Observer<List<Movie>>() {
+        Log.e(TAG, "getDataFromRoom");
+        MainViewModel mainViewModel =
+                ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        mainViewModel.getMovieList().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movies) {
                 printMovieList(movies);
